@@ -46,8 +46,12 @@ export function Footer() {
       </div>
       <div className="border-t border-limestone/10">
         <div className="wrap flex items-center justify-between gap-6 py-6 text-sm text-moss/70">
-          <p>© {new Date().getFullYear()} {site.name}, Toronto, Ontario</p>
-          <Image src="/monogram-light.png" alt="" width={600} height={600} className="h-10 w-auto opacity-60" />
+          <p>© {new Date().getFullYear()} {site.name}</p>
+          <div className="flex items-center gap-5">
+            <Link href="/privacy" className="hover:text-limestone">Privacy policy</Link>
+            <Link href="/terms" className="hover:text-limestone">Terms and conditions</Link>
+            <Image src="/monogram-light.png" alt="" width={600} height={600} className="hidden h-10 w-auto opacity-60 sm:block" />
+          </div>
         </div>
       </div>
     </footer>
