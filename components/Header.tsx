@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { nav } from "@/lib/site";
+import { nav, site } from "@/lib/site";
 
 export function Header() {
   const pathname = usePathname();
@@ -32,25 +32,26 @@ export function Header() {
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-forest/10 bg-cream/90 backdrop-blur">
-      <div className="wrap flex h-[5rem] items-center justify-between gap-6">
-        <Link href="/" className="shrink-0" aria-label="Shannon Boudreau Gardens, home">
-          <Image src="/logo-long.png" alt="" width={1800} height={457} priority className="h-11 w-auto sm:h-[3.25rem]" />
+    <header className="sticky top-0 z-40 border-b border-loam/10 bg-limestone/95 backdrop-blur-sm">
+      <div className="wrap flex h-[4.25rem] items-center justify-between gap-4 sm:h-[5rem]">
+        <Link href="/" className="shrink-0" aria-label={`${site.name}, home`}>
+          <Image src="/monogram.png" alt="" width={600} height={600} priority className="h-12 w-auto sm:hidden" />
+          <Image src="/logo-long.png" alt="" width={1800} height={457} priority className="hidden h-[3.25rem] w-auto sm:block" />
         </Link>
 
         <nav aria-label="Main" className="hidden md:block">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-1 lg:gap-3">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
-                  className="group relative px-3 py-2 text-[0.95rem] font-medium text-ink/75 transition-colors hover:text-forest-deep aria-[current=page]:text-forest-deep"
+                  className="group relative block px-3 py-2 text-[0.98rem] text-loam/70 transition-colors hover:text-loam aria-[current=page]:text-loam"
                 >
                   {item.label}
                   <span
                     aria-hidden
-                    className="absolute inset-x-3 -bottom-0.5 h-[2px] origin-left scale-x-0 rounded-full bg-clay transition-transform group-hover:scale-x-50 group-aria-[current=page]:scale-x-100"
+                    className="absolute inset-x-3 bottom-0.5 h-[2px] origin-left scale-x-0 bg-coneflower transition-transform duration-200 group-hover:scale-x-[0.4] group-aria-[current=page]:scale-x-100 motion-reduce:transition-none"
                   />
                 </Link>
               </li>
@@ -58,51 +59,63 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link href="/contact" className="btn-primary hidden !px-5 !py-2.5 text-sm sm:inline-flex">
-            Book a garden visit
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a href={site.phoneHref} className="hidden text-[0.95rem] text-loam/75 hover:text-loam lg:inline">
+            {site.phone}
+          </a>
+          <Link href="/contact" className="btn-primary min-h-[2.625rem] px-4 text-[0.92rem] sm:px-5">
+            <span className="sm:hidden">Book a visit</span>
+            <span className="hidden sm:inline">Book a garden visit</span>
           </Link>
           <button
             ref={toggleRef}
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-forest/25 text-forest-deep md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-loam hover:bg-loam/5 md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((o) => !o)}
           >
             <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-              {open ? <path d="M5 5l10 10M15 5L5 15" /> : <path d="M3 6h14M3 10h14M3 14h9" />}
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+              <path d={open ? "M5 5l12 12" : "M3 7h16"} className="transition-all duration-200 motion-reduce:transition-none" />
+              <path d={open ? "M17 5L5 17" : "M3 14h11"} className="transition-all duration-200 motion-reduce:transition-none" />
             </svg>
           </button>
         </div>
       </div>
 
+      {/* Collapsed with grid rows so it can animate; `invisible` keeps it out of the tab order. */}
       <div
         id="mobile-menu"
         ref={panelRef}
-        hidden={!open}
-        className="border-t border-forest/10 bg-cream md:hidden"
+        className={`grid transition-[grid-template-rows,visibility] duration-300 ease-out motion-reduce:transition-none md:hidden ${
+          open ? "visible grid-rows-[1fr]" : "invisible grid-rows-[0fr]"
+        }`}
       >
-        <nav aria-label="Mobile" className="wrap py-4">
-          <ul className="flex flex-col">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  className="flex items-center justify-between border-b border-forest/10 py-3.5 font-display text-2xl text-forest-deep aria-[current=page]:text-clay"
-                >
-                  {item.label}
-                  {isActive(item.href) && <span className="text-xs font-sans uppercase tracking-widest">You are here</span>}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <Link href="/contact" className="btn-primary mt-5 w-full">
-            Book a garden visit
-          </Link>
-        </nav>
+        <div className="overflow-hidden">
+          <nav aria-label="Mobile" className="wrap border-t border-loam/10 pb-6 pt-2">
+            <ul>
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className="flex items-baseline justify-between border-b border-loam/10 py-3.5 font-display text-[1.75rem] font-light text-loam"
+                  >
+                    {item.label}
+                    {isActive(item.href) && <span className="font-sans text-sm text-coneflower">You&apos;re here</span>}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-loam/70">
+              Or call me on{" "}
+              <a href={site.phoneHref} className="link text-loam">
+                {site.phone}
+              </a>
+            </p>
+          </nav>
+        </div>
       </div>
     </header>
   );

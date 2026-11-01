@@ -1,36 +1,20 @@
 // All business copy and facts live here so they can be edited in one place.
-// Anything marked TODO is a placeholder and needs confirming with Shannon before launch.
+// Anything marked TODO or PLACEHOLDER needs confirming with Shannon before launch (see README).
+
+import type { Plan } from "@/components/PlanSlider/types";
 
 export const site = {
   name: "Shannon Boudreau Gardens",
   person: "Shannon Boudreau",
   firstName: "Shannon",
-  url: "https://shannonboudreaugardens.vercel.app", // TODO replace with the real domain
+  url: "https://shannon-garden.vercel.app", // TODO replace with the real domain
   phone: "(416) 555-0142", // TODO confirm
   phoneHref: "tel:+14165550142", // TODO confirm
   email: "hello@example.com", // TODO confirm
-  instagram: "", // TODO add handle if wanted, e.g. "shannonboudreaugardens"
   yearsExperience: 15, // TODO confirm
   education: "Diploma in Horticulture, [School name]", // TODO confirm school and credential
-  educationShort: "Trained horticulturist", // used in small badges
   responseTime: "within two working days", // TODO confirm
-  seasonNote: "Booking spring visits from February; care rounds run April to November.", // TODO confirm
-  region: "Greater Toronto Area",
-  localSeo: "garden design and care in Toronto and the GTA",
-  serviceArea: [
-    "Old Toronto",
-    "East York",
-    "York",
-    "North York",
-    "Etobicoke",
-    "Scarborough",
-    "Mississauga",
-    "Oakville",
-    "Vaughan",
-    "Markham",
-    "Richmond Hill",
-    "Pickering",
-  ], // TODO confirm which areas Shannon actually covers
+  seasonNote: "I book spring visits from February. Care rounds run April to November.", // TODO confirm
 } as const;
 
 export const nav = [
@@ -40,6 +24,15 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+// TODO confirm the regions and towns Shannon covers. The postal checker on /contact uses these too.
+export const gtaRegions = [
+  { name: "City of Toronto", short: "Toronto", places: "Old Toronto, East York, York, North York, Etobicoke, Scarborough" },
+  { name: "Durham Region", short: "Durham", places: "Pickering, Ajax, Whitby, Oshawa" },
+  { name: "York Region", short: "York", places: "Vaughan, Markham, Richmond Hill, Aurora, Newmarket" },
+  { name: "Peel Region", short: "Peel", places: "Mississauga, Brampton, Caledon" },
+  { name: "Halton Region", short: "Halton", places: "Oakville, Burlington, Milton, Halton Hills" },
+] as const;
+
 export const approach = [
   {
     title: "Soil first",
@@ -47,15 +40,15 @@ export const approach = [
   },
   {
     title: "Right plant, right place",
-    body: "Light, wind, salt spray from the road, a neighbour's maple stealing water. A plant chosen for the spot it's actually in will outlive one chosen from a catalogue photo.",
+    body: "Light, wind, salt spray from the road, a neighbour's maple taking all the water. A plant chosen for the spot it's actually in will outlive one chosen from a catalogue photo.",
   },
   {
     title: "Native where it fits",
-    body: "Ontario natives and pollinator plants go in wherever they suit the site. Not as a rule, but because they tend to be tougher here and they feed the bees, birds and butterflies that share the block.",
+    body: "Ontario natives and pollinator plants go in wherever they suit the site. They tend to be tougher here, and they feed the bees, birds and butterflies that share the block.",
   },
   {
     title: "Care after planting day",
-    body: "A garden isn't finished when the last plant goes in. I come back to water in, edit, divide and adjust, so the garden settles instead of struggling.",
+    body: "A garden isn't finished when the last plant goes in. I come back to water in, edit, divide and adjust, so it settles instead of struggling.",
   },
 ] as const;
 
@@ -64,37 +57,44 @@ export const services = [
     slug: "design",
     title: "Garden design and planting",
     lede: "From a bare yard or a tired border to a planted, living garden.",
-    body: "We walk the space together, I test the soil and watch the light, then draw up a planting plan that fits how you actually use the garden. I source the plants, prepare the beds and plant everything myself.",
-    points: ["Site visit and soil assessment", "Planting plan with a plant list", "Bed preparation and planting"],
+    body: "We walk the space together, I test the soil and watch the light, then I draw up a planting plan that fits how you actually use the garden. I source the plants, prepare the beds and plant everything myself.",
+    points: ["Site visit and soil assessment", "Planting plan and plant list", "Bed preparation and planting"],
   },
   {
     slug: "care",
     title: "Seasonal care and maintenance",
-    lede: "Regular visits from someone who knows your garden by name.",
-    body: "Spring clean-up done at the right time for overwintering insects, summer editing and deadheading, fall planting and putting the garden to bed. Visits are scheduled through the season so nothing gets away from you.",
-    points: ["Spring and fall clean-ups", "Pruning, dividing and deadheading", "Weekly, fortnightly or monthly rounds"],
+    lede: "Regular visits from someone who knows your garden plant by plant.",
+    body: "Spring clean-up timed for the insects overwintering in your stems, summer editing and deadheading, fall planting and putting the garden to bed. Visits are booked through the season so nothing gets away from you.",
+    points: ["Spring and fall clean-ups", "Pruning, dividing, deadheading", "Weekly, fortnightly or monthly"],
   },
   {
     slug: "containers",
     title: "Balconies, terraces and containers",
     lede: "Real gardens in small, windy, high-up places.",
-    body: "Condo balconies and rooftop terraces have their own weather. I choose containers, soil mixes and plants that can handle wind, reflected heat and building rules, and set you up to keep them going.",
-    points: ["Wind- and heat-tolerant planting", "Container and soil selection", "Seasonal changeovers"],
+    body: "Condo balconies and rooftop terraces have their own weather. I choose containers, soil mixes and plants that can take wind, reflected heat and building rules, and show you how to keep them going.",
+    points: ["Wind- and heat-tolerant planting", "Containers and soil mixes", "Seasonal changeovers"],
   },
   {
     slug: "native",
     title: "Native and pollinator gardens",
-    lede: "Gardens that feed the neighbourhood, not just decorate it.",
+    lede: "Gardens that feed the neighbourhood as well as decorating it.",
     body: "Front-yard meadows, boulevard plantings and shady woodland corners built around Ontario native species. Planned so they look intentional to the neighbours and generous to the wildlife.",
-    points: ["Native plant selection for your site", "Lawn-to-garden conversions", "Habitat-friendly fall and spring care"],
+    points: ["Native plants chosen for your site", "Lawn-to-garden conversions", "Habitat-friendly clean-ups"],
   },
   {
     slug: "coaching",
     title: "Garden coaching",
-    lede: "Learn to look after your own garden, with someone at your side.",
-    body: "One-on-one sessions in your own garden. We work through what's there, what it needs and when, and you leave knowing how to prune that shrub, when to divide those hostas and what to ignore.",
-    points: ["Hands-on sessions in your garden", "A seasonal care calendar written for you", "Follow-up questions by email"],
+    lede: "Learn to look after your own garden, with me beside you.",
+    body: "One-on-one sessions in your own garden. We go through what's there, what it needs and when, and you finish knowing how to prune that shrub, when to divide those hostas and what you can safely ignore.",
+    points: ["Hands-on sessions at your place", "A care calendar written for your garden", "Follow-up questions by email"],
   },
+] as const;
+
+export const contactSteps = [
+  { title: "Send me a note", body: `Tell me a little about your garden using the form, or call. I reply ${site.responseTime}.` },
+  { title: "Site visit", body: "I come and walk the garden with you. I check the soil, light and drainage and listen to what you want from the space." },
+  { title: "Plan and quote", body: "You get a written plan of what I'd do, when, and what it costs. Take your time with it." },
+  { title: "Planting and care", body: "I do the work myself, then come back through the seasons to keep it growing well." },
 ] as const;
 
 export const principles = [
@@ -104,7 +104,7 @@ export const principles = [
   },
   {
     title: "Honest advice",
-    body: "If a plant won't thrive where you want it, I'll say so. If a corner is better left alone, I'll say that too.",
+    body: "If a plant won't thrive where you want it, I'll tell you. If a corner is better left alone, I'll tell you that too.",
   },
   {
     title: "Work with the site",
@@ -116,69 +116,232 @@ export const principles = [
   },
 ] as const;
 
-// TODO replace with real projects and photos once available.
-export const projects = [
+// PLACEHOLDER - replace with real projects once available.
+// To use photos instead of the drawn plans, add `photos: { before: "/work/x-before.jpg", after: "/work/x-after.jpg" }`
+// (files in /public/work). The slider shows photos whenever they're present.
+export const projects: {
+  slug: string;
+  title: string;
+  place: string;
+  type: string;
+  year: string;
+  brief: string;
+  done: string[];
+  plan: Plan;
+  photos?: { before: string; after: string };
+}[] = [
   {
+    slug: "leslieville",
     title: "A shady backyard that finally fills in",
     place: "Leslieville",
     type: "Backyard design and planting",
     year: "2025",
-    summary:
-      "A narrow semi-detached lot under a mature Norway maple. Dry shade, compacted clay and a lawn that never took. We lifted the turf, worked in leaf compost and planted layers of shade-tolerant perennials and ferns.",
-    plants: ["Carex pensylvanica", "Asarum canadense", "Polystichum acrostichoides", "Geranium maculatum"],
-    tone: "fern",
+    brief:
+      "A narrow semi-detached lot under a mature Norway maple. Dry shade, compacted clay, and a lawn that had given up years ago.",
+    done: [
+      "Lifted the dead lawn and worked leaf compost into the clay",
+      "Re-laid the old concrete pad as a small patio",
+      "Planted layered shade beds along both fences and under the maple",
+      "Set a stepping-stone path through to the back gate",
+    ],
+    plan: {
+      house: { rect: [16, 16, 56, 228], label: "House" },
+      trees: [{ x: 300, y: 74, r: 52, label: "Existing maple" }],
+      before: [
+        { kind: "turf", rect: [72, 16, 312, 228], label: "Patchy lawn" },
+        { kind: "paving", rect: [72, 80, 52, 100], label: "Concrete pad" },
+      ],
+      after: [
+        { kind: "mulch", rect: [72, 16, 312, 228] },
+        { kind: "paving", rect: [72, 80, 52, 100], label: "Patio" },
+        { kind: "bed", points: [[124, 16], [384, 16], [384, 132], [330, 138], [268, 112], [236, 70], [180, 62], [124, 66]] },
+        { kind: "bed", points: [[124, 244], [384, 244], [384, 206], [320, 196], [240, 208], [170, 198], [124, 204]] },
+      ],
+      paths: [{ kind: "stepping", points: [[132, 130], [190, 142], [250, 160], [310, 170], [376, 168]] }],
+      drifts: [
+        { code: "A", cx: 162, cy: 38, n: 8, spread: 22 },
+        { code: "C", cx: 222, cy: 38, n: 5, spread: 18 },
+        { code: "B", cx: 300, cy: 100, n: 8, spread: 26 },
+        { code: "D", cx: 358, cy: 104, n: 4, spread: 16 },
+        { code: "A", cx: 176, cy: 224, n: 7, spread: 18 },
+        { code: "D", cx: 258, cy: 226, n: 5, spread: 15 },
+        { code: "C", cx: 340, cy: 224, n: 5, spread: 17 },
+      ],
+      key: [
+        { code: "A", latin: "Carex pensylvanica", common: "Pennsylvania sedge", form: "grass", r: 5, tone: "#8FA77B" },
+        { code: "B", latin: "Asarum canadense", common: "Wild ginger", form: "mound", r: 5, tone: "#6E8F62" },
+        { code: "C", latin: "Polystichum acrostichoides", common: "Christmas fern", form: "fern", r: 8, tone: "#4E7246" },
+        { code: "D", latin: "Geranium maculatum", common: "Wild geranium", form: "mound", r: 6, tone: "#B98BB0" },
+      ],
+    },
   },
   {
+    slug: "midtown",
     title: "From lawn to pollinator front yard",
     place: "Midtown",
     type: "Native and pollinator garden",
     year: "2024",
-    summary:
-      "A full-sun front lawn turned into a structured native meadow, edged cleanly so it reads as a garden from the sidewalk. Something flowers from May to October, and the bees noticed in the first summer.",
-    plants: ["Echinacea purpurea", "Monarda fistulosa", "Asclepias tuberosa", "Schizachyrium scoparium"],
-    tone: "meadow",
+    brief:
+      "A full-sun front lawn on a busy street. The owners wanted something alive that the neighbours would still read as a proper garden.",
+    done: [
+      "Removed the turf and kept the soil in place, no new topsoil trucked in",
+      "Planted a structured native meadow either side of the front walk",
+      "Wove a stepping-stone path through so it can be tended without trampling",
+      "Edged everything cleanly so it looks intended from the sidewalk",
+    ],
+    plan: {
+      house: { rect: [16, 16, 368, 52], label: "House" },
+      before: [
+        { kind: "turf", rect: [16, 68, 164, 156], label: "Lawn" },
+        { kind: "turf", rect: [216, 68, 168, 156], label: "Lawn" },
+        { kind: "paving", rect: [180, 68, 36, 156] },
+        { kind: "paving", rect: [16, 224, 368, 20], label: "Sidewalk" },
+      ],
+      after: [
+        { kind: "bed", rect: [16, 68, 164, 156] },
+        { kind: "bed", rect: [216, 68, 168, 156] },
+        { kind: "paving", rect: [180, 68, 36, 156] },
+        { kind: "paving", rect: [16, 224, 368, 20], label: "Sidewalk" },
+      ],
+      paths: [{ kind: "stepping", points: [[226, 150], [270, 142], [320, 156], [376, 150]] }],
+      drifts: [
+        { code: "E", cx: 58, cy: 108, n: 9, spread: 28 },
+        { code: "A", cx: 124, cy: 176, n: 7, spread: 24 },
+        { code: "B", cx: 60, cy: 190, n: 5, spread: 20 },
+        { code: "C", cx: 136, cy: 100, n: 4, spread: 18 },
+        { code: "A", cx: 262, cy: 100, n: 6, spread: 22 },
+        { code: "B", cx: 346, cy: 102, n: 5, spread: 22 },
+        { code: "D", cx: 248, cy: 196, n: 5, spread: 18 },
+        { code: "C", cx: 296, cy: 198, n: 4, spread: 16 },
+        { code: "E", cx: 350, cy: 196, n: 7, spread: 22 },
+      ],
+      key: [
+        { code: "A", latin: "Echinacea purpurea", common: "Purple coneflower", form: "mound", r: 6, tone: "#C482A3" },
+        { code: "B", latin: "Monarda fistulosa", common: "Wild bergamot", form: "mound", r: 6, tone: "#AE9BC6" },
+        { code: "C", latin: "Asclepias tuberosa", common: "Butterfly milkweed", form: "mound", r: 6, tone: "#E0A066" },
+        { code: "D", latin: "Rudbeckia hirta", common: "Black-eyed Susan", form: "mound", r: 5, tone: "#E3C25B" },
+        { code: "E", latin: "Schizachyrium scoparium", common: "Little bluestem", form: "grass", r: 6, tone: "#9DAE8A" },
+      ],
+    },
   },
   {
-    title: "A windproof balcony kitchen garden",
+    slug: "liberty-village",
+    title: "A windproof condo terrace",
     place: "Liberty Village",
-    type: "Balcony and containers",
+    type: "Terrace and containers",
     year: "2025",
-    summary:
-      "A 20th-floor balcony with afternoon sun and constant wind. Heavy, wide containers, a gritty mix and compact herbs, tomatoes and trailing plants that hold up in a gust.",
-    plants: ["Thymus vulgaris", "Salvia rosmarinus", "Solanum lycopersicum 'Tumbler'", "Sedum spp."],
-    tone: "terrace",
+    brief:
+      "A 20th-floor terrace with afternoon sun and wind most days. Every nursery plant the owners tried had dried out or blown over.",
+    done: [
+      "Replaced small pots with heavy, wide planters that stay put in a gust",
+      "Mixed a gritty, free-draining container soil",
+      "Planted wind-tolerant herbs, grasses and two small serviceberries",
+      "Left the middle clear for a table and chairs",
+    ],
+    plan: {
+      house: { rect: [16, 16, 368, 40], label: "Building" },
+      before: [{ kind: "paving", rect: [16, 56, 368, 188], label: "Concrete pavers" }],
+      after: [
+        { kind: "paving", rect: [16, 56, 368, 188] },
+        { kind: "deck", rect: [130, 96, 140, 80], label: "Seating" },
+        { kind: "planter", rect: [36, 210, 328, 26] },
+        { kind: "planter", rect: [28, 68, 52, 52] },
+        { kind: "planter", rect: [320, 68, 52, 52] },
+      ],
+      drifts: [
+        { code: "A", cx: 62, cy: 223, n: 3, spread: 10 },
+        { code: "E", cx: 120, cy: 223, n: 4, spread: 12 },
+        { code: "B", cx: 194, cy: 223, n: 3, spread: 10 },
+        { code: "E", cx: 268, cy: 223, n: 4, spread: 12 },
+        { code: "C", cx: 336, cy: 223, n: 3, spread: 10 },
+        { code: "D", cx: 54, cy: 94, n: 1, spread: 0 },
+        { code: "D", cx: 346, cy: 94, n: 1, spread: 0 },
+      ],
+      key: [
+        { code: "A", latin: "Thymus vulgaris", common: "Common thyme", form: "mound", r: 5, tone: "#9DAE8A" },
+        { code: "B", latin: "Salvia rosmarinus", common: "Rosemary", form: "grass", r: 6, tone: "#7E9A84" },
+        { code: "C", latin: "Sedum ternatum", common: "Woodland stonecrop", form: "mound", r: 5, tone: "#B7C79A" },
+        { code: "D", latin: "Amelanchier × grandiflora 'Autumn Brilliance'", common: "Serviceberry", form: "shrub", r: 20, tone: "#6E8F62" },
+        { code: "E", latin: "Sporobolus heterolepis", common: "Prairie dropseed", form: "grass", r: 6, tone: "#A9B98F" },
+      ],
+    },
   },
   {
-    title: "Seasonal care for an old perennial border",
-    place: "Roncesvalles",
-    type: "Seasonal care and coaching",
+    slug: "oakville",
+    title: "A woodland garden under old oaks",
+    place: "Oakville",
+    type: "Shade garden and seasonal care",
     year: "2023 to now",
-    summary:
-      "A long-established border that had got away from its owners. Two seasons of editing, dividing and replanting, then coaching sessions so they can keep it themselves with a few visits a year.",
-    plants: ["Hemerocallis fulva", "Phlox paniculata", "Symphyotrichum novae-angliae", "Hosta spp."],
-    tone: "border",
+    brief:
+      "A large lot shaded by two mature red oaks, where the lawn thinned out a little more every year and needed reseeding every spring.",
+    done: [
+      "Gave the lawn under the oaks back to the woodland",
+      "Planted ferns, sedges and spring ephemerals in broad drifts",
+      "Laid a wood-chip path that winds between the trees",
+      "Monthly care visits from April to November",
+    ],
+    plan: {
+      house: { rect: [16, 16, 70, 228], label: "House" },
+      trees: [
+        { x: 222, y: 80, r: 56, label: "Existing oak" },
+        { x: 330, y: 190, r: 48, label: "Existing oak" },
+      ],
+      before: [
+        { kind: "turf", rect: [86, 16, 298, 228], label: "Thin lawn" },
+        { kind: "paving", rect: [86, 90, 40, 80], label: "Patio" },
+      ],
+      after: [
+        { kind: "mulch", rect: [86, 16, 298, 228] },
+        { kind: "paving", rect: [86, 90, 40, 80], label: "Patio" },
+        { kind: "bed", points: [[126, 16], [384, 16], [384, 96], [300, 112], [250, 140], [180, 128], [126, 110]] },
+        { kind: "bed", points: [[126, 244], [384, 244], [384, 140], [310, 150], [250, 182], [180, 170], [126, 152]] },
+      ],
+      paths: [{ kind: "chip", points: [[126, 131], [180, 150], [250, 161], [300, 131], [384, 118]] }],
+      drifts: [
+        { code: "A", cx: 168, cy: 60, n: 6, spread: 22 },
+        { code: "B", cx: 256, cy: 104, n: 7, spread: 20 },
+        { code: "C", cx: 340, cy: 52, n: 5, spread: 20 },
+        { code: "D", cx: 180, cy: 206, n: 6, spread: 20 },
+        { code: "E", cx: 252, cy: 216, n: 6, spread: 18 },
+        { code: "A", cx: 350, cy: 214, n: 5, spread: 18 },
+      ],
+      key: [
+        { code: "A", latin: "Athyrium filix-femina", common: "Lady fern", form: "fern", r: 8, tone: "#5E7F59" },
+        { code: "B", latin: "Tiarella cordifolia", common: "Foamflower", form: "mound", r: 5, tone: "#C9CDB8" },
+        { code: "C", latin: "Maianthemum racemosum", common: "False Solomon's seal", form: "mound", r: 7, tone: "#8FA77B" },
+        { code: "D", latin: "Aquilegia canadensis", common: "Wild columbine", form: "mound", r: 5, tone: "#D08A6E" },
+        { code: "E", latin: "Carex plantaginea", common: "Plantain-leaved sedge", form: "grass", r: 6, tone: "#9DAE8A" },
+      ],
+    },
   },
-] as const;
+];
 
-// TODO replace with real client quotes (with permission) before launch.
+// PLACEHOLDER - replace with real client quotes before launch (with their permission).
+// `project` ties each quote to a project above so it sits next to that work.
 export const testimonials = [
   {
-    quote:
-      "Shannon explained every choice she made, and three years on the garden looks better than the day she planted it. That never happened with the landscaping companies we used before.",
-    name: "Homeowner", // TODO real name or initials
+    project: "leslieville",
+    quote: "Three years on, the garden looks better than the day she planted it. That never happened with the landscapers we used before.",
+    name: "Jen", // PLACEHOLDER
     place: "Leslieville",
   },
   {
-    quote:
-      "It was the same person every visit. She knew which plants were struggling before I did.",
-    name: "Homeowner", // TODO real name or initials
+    project: "midtown",
+    quote: "It was the same person every visit. She knew which plants were struggling before I did.",
+    name: "Marcus", // PLACEHOLDER
     place: "Midtown",
   },
   {
-    quote:
-      "Our balcony used to be a graveyard for nursery plants. Now we eat from it all summer.",
-    name: "Condo owner", // TODO real name or initials
+    project: "liberty-village",
+    quote: "Our balcony used to be where nursery plants went to die. Now we cook from it all summer.",
+    name: "Aiko", // PLACEHOLDER
     place: "Liberty Village",
+  },
+  {
+    project: "oakville",
+    quote: "I've learned more about my own garden from Shannon's visits than from ten years of owning it.",
+    name: "Dev", // PLACEHOLDER
+    place: "Oakville",
   },
 ] as const;
 
