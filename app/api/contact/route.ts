@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.CONTACT_FROM || `${site.name} <onboarding@resend.dev>`,
+      from: process.env.CONTACT_FROM || `${site.businessName} <onboarding@resend.dev>`,
       to: to.split(",").map((s) => s.trim()),
       reply_to: fields.email,
       subject: `Garden visit request: ${fields.name}, ${fields.area}`,

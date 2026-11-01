@@ -6,7 +6,7 @@ import { principles, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Shannon",
-  description: `Meet ${site.person}: a lifetime of growing things and ${site.yearsProfessional} years of garden work for clients, offering garden design and care in Toronto and the GTA.`,
+  description: `Meet ${site.ownerName}: a lifetime of growing things and ${site.yearsProfessional} years of garden work for clients, offering garden design and care in Toronto and the GTA.`,
 };
 
 const degree = `a double degree in ${site.education.firstField} and ${site.education.secondField}`;
@@ -20,7 +20,7 @@ export default function About() {
             Bringing the craft of horticulture <em className="text-green">back into city life.</em>
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-loam/75">
-            I&apos;m {site.person}. I design, plant and look after gardens across the Greater Toronto Area, and I do every
+            I&apos;m {site.ownerName}. I design, plant and look after gardens across the Greater Toronto Area, and I do every
             part of it myself.
           </p>
         </div>
@@ -35,7 +35,7 @@ export default function About() {
           <div className="bg-paper p-3 shadow-[0_1px_0_rgb(30_42_31/0.15)] ring-1 ring-loam/10 sm:p-4">
             <div className="relative flex aspect-[4/5] flex-col items-center justify-center gap-4 border border-loam/15 bg-limestone-deep text-center">
               <Image src="/monogram.png" alt="" width={600} height={600} className="h-24 w-auto opacity-25" />
-              <span className="font-display text-[1.4rem] italic text-loam/70">Portrait of Shannon</span>
+              <span className="font-display text-[1.4rem] italic text-loam/70">Portrait of {site.ownerName}</span>
               <span className="text-[0.88rem] text-loam/50">Photo to come</span>
             </div>
           </div>

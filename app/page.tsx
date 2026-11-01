@@ -6,8 +6,8 @@ import { CtaBand } from "@/components/CtaBand";
 import { approach, services, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: `${site.name} | Garden design and care in Toronto and the GTA` },
-  description: `Garden design and care in Toronto and the GTA from ${site.person}, who has been growing things her whole life. Planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
+  title: { absolute: `${site.businessName} | Garden design and care in Toronto and the GTA` },
+  description: `Garden design and care in Toronto and the GTA from ${site.ownerName}, who has been growing things her whole life. Planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
 };
 
 // Re-render daily so the server-rendered month is current before the visitor's own clock takes over.
@@ -22,7 +22,7 @@ export default function Home() {
             City gardens, <em className="text-green">grown properly.</em>
           </h1>
           <p className="mt-7 max-w-[42ch] text-[1.15rem] text-loam/80">
-            I&apos;m {site.person}. I&apos;ve been growing things my whole life, and for the last few years I&apos;ve been
+            I&apos;m {site.ownerName}. I&apos;ve been growing things my whole life, and for the last few years I&apos;ve been
             doing it for clients across the Greater Toronto Area. One gardener, start to finish.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

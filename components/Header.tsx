@@ -93,7 +93,7 @@ export function Header() {
         }`}
       >
         <div className="wrap flex h-[4.25rem] items-center justify-between gap-4 sm:h-20">
-          <Link href="/" className="shrink-0" aria-label={`${site.name}, home`}>
+          <Link href="/" className="shrink-0" aria-label={`${site.businessName}, home`}>
             <Image
               src="/monogram.png"
               alt=""

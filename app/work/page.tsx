@@ -7,7 +7,7 @@ import { projects, site, testimonials } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Recent work and what clients say",
-  description: `Garden design and care in Toronto and the GTA: recent projects by ${site.person} in Leslieville, Midtown, Liberty Village and Oakville, with before and after planting plans.`,
+  description: `Garden design and care in Toronto and the GTA: recent projects by ${site.ownerName} in Leslieville, Midtown, Liberty Village and Oakville, with before and after planting plans.`,
 };
 
 export default function Work() {

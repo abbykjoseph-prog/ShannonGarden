@@ -6,7 +6,7 @@ import { contactSteps, gtaRegions, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Book a garden visit",
-  description: `Book a garden visit with ${site.person} for garden design and care in Toronto and the GTA, including Durham, York, Peel and Halton.`,
+  description: `Book a garden visit with ${site.ownerName} for garden design and care in Toronto and the GTA, including Durham, York, Peel and Halton.`,
 };
 
 export default function Contact() {

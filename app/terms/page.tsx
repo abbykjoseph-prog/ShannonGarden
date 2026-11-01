@@ -6,13 +6,16 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms and conditions",
-  description: `Terms for using the ${site.name} website.`,
+  description: `Terms for using the ${site.businessName} website.`,
 };
 
 export default function Terms() {
   return (
     <LegalPage title="Terms and conditions">
-      <p>These terms cover your use of this website. By using it, you agree to them.</p>
+      <p>
+        This website is operated by {site.ownerName}, trading as {site.businessName}. These terms cover your use of it. By
+        using it, you agree to them.
+      </p>
 
       <h2>Information on this site</h2>
       <p>
@@ -40,7 +43,7 @@ export default function Terms() {
 
       <h2>Content and logo</h2>
       <p>
-        The text, drawings and the {site.name} name and logo belong to {site.person}. Please don&apos;t reuse them without
+        The text, drawings and the {site.businessName} name and logo belong to {site.ownerName}. Please don&apos;t reuse them without
         asking.
       </p>
 

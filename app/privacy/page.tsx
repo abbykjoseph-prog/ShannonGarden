@@ -6,15 +6,15 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
-  description: `How ${site.name} handles your information. No cookies, no analytics, no tracking.`,
+  description: `How ${site.businessName} handles your information. No cookies, no analytics, no tracking.`,
 };
 
 export default function Privacy() {
   return (
     <LegalPage title="Privacy policy">
       <p>
-        This policy explains what information {site.name} collects through this website and what I do with it. I&apos;m
-        {" "}{site.person}, a sole proprietor in Ontario, and I follow Canada&apos;s federal privacy law for businesses, the
+        This policy explains what information {site.businessName} collects through this website and what I do with it. The
+        business is operated by {site.ownerName}, a sole proprietor in Ontario, and I follow Canada&apos;s federal privacy law for businesses, the
         Personal Information Protection and Electronic Documents Act (PIPEDA).
       </p>
 

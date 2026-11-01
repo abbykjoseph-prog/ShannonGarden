@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="bg-loam text-moss">
       <div className="wrap grid gap-x-12 gap-y-12 pb-14 pt-16 md:grid-cols-12">
         <div className="md:col-span-5">
-          <Image src="/logo-long-light.png" alt={site.name} width={1800} height={457} className="h-14 w-auto sm:h-16" />
+          <Image src="/logo-long-light.png" alt={site.businessName} width={1800} height={457} className="h-14 w-auto sm:h-16" />
           <p className="mt-6 max-w-[36ch] text-limestone/80">
             Garden design and care in Toronto and the GTA. One gardener, from the first visit to the last
             clean-up of the season.
@@ -46,7 +46,7 @@ export function Footer() {
       </div>
       <div className="border-t border-limestone/10">
         <div className="wrap flex items-center justify-between gap-6 py-6 text-sm text-moss/70">
-          <p>© {new Date().getFullYear()} {site.name}</p>
+          <p>© {new Date().getFullYear()} {site.businessName}</p>
           <div className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-limestone">Privacy policy</Link>
             <Link href="/terms" className="hover:text-limestone">Terms and conditions</Link>

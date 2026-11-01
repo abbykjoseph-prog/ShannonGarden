@@ -4,8 +4,9 @@
 import type { Plan } from "@/components/PlanSlider/types";
 
 export const site = {
-  name: "Shannon Boudreau Gardens",
-  person: "Shannon Boudreau",
+  // The business name matches the logo; the owner is named wherever the person is meant.
+  businessName: "Shannon Boudreau Gardens",
+  ownerName: "Shannon K Boudreau",
   firstName: "Shannon",
   url: "https://shannon-garden.vercel.app", // TODO replace with the real domain
   // Phone and email appear in exactly two places: the footer and the contact page.

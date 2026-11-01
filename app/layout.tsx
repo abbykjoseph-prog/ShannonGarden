@@ -12,12 +12,14 @@ import { gtaRegions, site } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Garden design and care in Toronto and the GTA`,
-    template: `%s | ${site.name}`,
+    default: `${site.businessName} | Garden design and care in Toronto and the GTA`,
+    template: `%s | ${site.businessName}`,
   },
-  description: `${site.person} offers garden design and care in Toronto and the GTA: planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
+  description: `${site.ownerName} offers garden design and care in Toronto and the GTA: planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
+  authors: [{ name: site.ownerName }],
+  creator: site.ownerName,
   icons: { icon: "/favicon.svg" },
-  openGraph: { siteName: site.name, locale: "en_CA", type: "website" },
+  openGraph: { siteName: site.businessName, locale: "en_CA", type: "website" },
 };
 
 export const viewport: Viewport = { themeColor: "#EEF0E9" };
@@ -25,13 +27,13 @@ export const viewport: Viewport = { themeColor: "#EEF0E9" };
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  name: site.name,
-  founder: { "@type": "Person", name: site.person },
+  name: site.businessName,
+  founder: { "@type": "Person", name: site.ownerName },
   url: site.url,
   image: `${site.url}/opengraph-image.png`,
   address: { "@type": "PostalAddress", addressLocality: "Toronto", addressRegion: "ON", addressCountry: "CA" },
   areaServed: gtaRegions.map((r) => ({ "@type": "AdministrativeArea", name: r.name })),
-  description: `Garden design and care in Toronto and the GTA by ${site.person}. One gardener, start to finish.`,
+  description: `Garden design and care in Toronto and the GTA by ${site.ownerName}. One gardener, start to finish.`,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
