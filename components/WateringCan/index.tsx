@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ButterflyArt, useButterfly } from "./Butterfly";
 import { Can } from "./Can";
-import { Plant } from "./Plants";
+import { PlantArt, PlantLabel } from "@/components/PlantArt";
+import { getPlant } from "@/lib/plants";
 import { CAN_BOUNDS, CAN_START, PATCHES, PATCH_RX, PATCH_RY, POUR_TIP, SCENE, SOAK_MS, cracks } from "./patches";
 import s from "./WateringCan.module.css";
 
@@ -78,9 +79,9 @@ export function WateringCan() {
   const fly = useButterfly({ active: flyIn, reduced, wrapRef, canRef, draggingRef, moveCan });
 
   const finish = useCallback((i: number) => {
-    const p = PATCHES[i];
+    const p = getPlant(PATCHES[i].plantId);
     setLastBloom(i);
-    setAnnounce(`The ${p.patchName} patch is soaked. ${p.common}, ${p.latin}, is coming into flower.`);
+    setAnnounce(`The ${p.commonName.toLowerCase()} patch is soaked. ${p.commonName}, ${p.botanicalName}, is coming into flower.`);
   }, []);
 
   // Soak whichever patch is being poured on, about 1.5s of continuous watering.
@@ -211,7 +212,7 @@ export function WateringCan() {
 
           {/* the three dry patches, darkening as they soak */}
           {PATCHES.map((p, i) => (
-            <g key={p.kind}>
+            <g key={p.plantId}>
               <ellipse cx={p.cx} cy={p.cy} rx={PATCH_RX} ry={PATCH_RY} fill="#B39A7E" />
               <g clipPath={`url(#patch-${i})`} opacity={1 - moist[i]}>
                 <g transform={`translate(${p.cx} ${p.cy})`} stroke="#7E644C" strokeWidth="1.2" fill="none" strokeLinejoin="round">
@@ -226,7 +227,7 @@ export function WateringCan() {
           ))}
 
           {/* plants grow once a patch is soaked */}
-          {PATCHES.map((p, i) => grown[i] && <Plant key={p.kind} kind={p.kind} cx={p.cx} cy={p.cy - 2} />)}
+          {PATCHES.map((p, i) => grown[i] && <PlantArt key={p.plantId} plant={getPlant(p.plantId)} x={p.cx} y={p.cy - 2} />)}
 
           {/* water */}
           {landY !== null && !reduced && (
@@ -270,11 +271,11 @@ export function WateringCan() {
         {/* Each patch is also a button: the keyboard and tap path to the same growth. */}
         {PATCHES.map((p, i) => (
           <button
-            key={p.kind}
+            key={p.plantId}
             type="button"
             onClick={() => waterPatch(i)}
             aria-disabled={grown[i]}
-            aria-label={grown[i] ? `${p.common} is in flower` : `Water the ${p.patchName} patch`}
+            aria-label={grown[i] ? `${getPlant(p.plantId).commonName} is in flower` : `Water the ${getPlant(p.plantId).commonName.toLowerCase()} patch`}
             className="absolute rounded-[50%] focus-visible:outline-offset-0"
             style={{
               left: `${((p.cx - PATCH_RX) / SCENE.w) * 100}%`,
@@ -319,8 +320,7 @@ export function WateringCan() {
         <div className="h-[7.25rem]">
           {lastBloom !== null ? (
             <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-paper px-4 py-2.5 ring-1 ring-loam/10`}>
-              <p className="text-[1.2rem] font-semibold leading-tight text-loam">{PATCHES[lastBloom].common}</p>
-              <p className="latin mt-0.5 text-[1rem] leading-snug text-loam/80">{PATCHES[lastBloom].latin}</p>
+              <PlantLabel plant={getPlant(PATCHES[lastBloom].plantId)} />
             </div>
           ) : (
             <p className="pt-2.5 text-loam/70">Three native Ontario perennials, waiting for water.</p>

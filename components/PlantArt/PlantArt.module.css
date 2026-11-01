@@ -1,0 +1,52 @@
+/* Growth: the stem draws in, leaves unfurl, then the flower (or canopy, or fruit) opens. */
+.stem {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.leaf,
+.flower {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: unfurl 520ms cubic-bezier(0.2, 0.8, 0.3, 1.1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.flower {
+  animation-name: open;
+  animation-duration: 700ms;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes unfurl {
+  from { transform: scale(0.05) rotate(50deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes open {
+  0% { transform: scale(0.1) rotate(-25deg); opacity: 0; }
+  60% { opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+
+@keyframes crossfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Reduced motion: no drawing in. The grown plant simply crossfades in. */
+@media (prefers-reduced-motion: reduce) {
+  .stem,
+  .leaf,
+  .flower {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .plant {
+    animation: crossfade 700ms ease both;
+  }
+}

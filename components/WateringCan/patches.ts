@@ -1,18 +1,10 @@
-export type PlantKind = "coneflower" | "rudbeckia" | "monarda";
-
 export const SCENE = { w: 560, h: 440 };
 
-export const PATCHES: {
-  kind: PlantKind;
-  cx: number;
-  cy: number;
-  common: string;
-  latin: string;
-  patchName: string;
-}[] = [
-  { kind: "coneflower", cx: 150, cy: 309, common: "Purple coneflower", latin: "Echinacea purpurea", patchName: "coneflower" },
-  { kind: "rudbeckia", cx: 280, cy: 309, common: "Black-eyed Susan", latin: "Rudbeckia hirta", patchName: "black-eyed Susan" },
-  { kind: "monarda", cx: 410, cy: 309, common: "Wild bergamot", latin: "Monarda fistulosa", patchName: "wild bergamot" },
+/** The three patches in the bed, and which plant from lib/plants.ts grows in each. */
+export const PATCHES: { plantId: string; cx: number; cy: number }[] = [
+  { plantId: "coneflower", cx: 150, cy: 309 },
+  { plantId: "rudbeckia", cx: 280, cy: 309 },
+  { plantId: "monarda", cx: 410, cy: 309 },
 ];
 
 export const PATCH_RX = 54;
