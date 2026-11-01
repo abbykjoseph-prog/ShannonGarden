@@ -8,16 +8,16 @@ import s from "./DesignBed.module.css";
 
 type Pt = { x: number; y: number };
 
-// A wide (16:10) scene: a two-shelf tray on the left, the raised bed to its right.
+// A wide (2:1) scene: a two-shelf tray on the left, the raised bed to its right.
 const W = 560;
-const H = 350;
+const H = 280;
 // Four plants of different heights and colours, from lib/plants.ts.
 const IDS = ["coneflower", "lavender", "rudbeckia", "hosta"];
-const SHELVES = [150, 300];
+const SHELVES = [116, 238];
 const SLOTS: Record<string, Pt> = Object.fromEntries(IDS.map((id, i) => [id, { x: i % 2 ? 132 : 58, y: SHELVES[i >> 1] }]));
 // The bed's soil surface, in a slight 3/4 view: a back edge and a wider front edge.
-const BED = { backY: 196, frontY: 282, backL: 238, backR: 530, frontL: 214, frontR: 548 };
-const CENTRE = { x: 384, y: 240 };
+const BED = { backY: 148, frontY: 226, backL: 238, backR: 530, frontL: 214, frontR: 548 };
+const CENTRE = { x: 384, y: 188 };
 const TRAY_K = 0.42;
 const GAP = 58; // how far apart plant bases settle
 const STEP = 12; // keyboard marker step
@@ -201,10 +201,10 @@ export function DesignBed() {
       <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
           {/* sky, sun and distant shrubs, as in the original home scene */}
-<circle cx="490" cy="60" r="28" fill="#F3E2B8" opacity="0.85" />
-          <path d="M34 80c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
-          <path d="M0 240c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
-          <rect x="0" y="322" width={W} height="28" fill="#8FA884" />
+<circle cx="490" cy="50" r="26" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 64c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 200c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="258" width={W} height="22" fill="#8FA884" />
 
           {/* the tray shelf */}
           {SHELVES.map((y) => (
@@ -311,12 +311,12 @@ export function DesignBed() {
         )}
       </div>
 
-      <figcaption className="mt-4">
+      <figcaption className="mt-2">
         {/* Fixed height, sized for the longest name and description, so the button below never moves. */}
-        <div className="h-[11rem] sm:h-[9.5rem]">
+        <div className="h-[11rem] md:h-[4.5rem] lg:h-[5.75rem] xl:h-[4.5rem]">
           {info ? (
             <div key={info.id}>
-              <PlantLabel plant={info} description />
+              <PlantLabel plant={info} description row />
             </div>
           ) : (
             <p className="pt-1 text-ink/65">Drag a plant into the bed.</p>

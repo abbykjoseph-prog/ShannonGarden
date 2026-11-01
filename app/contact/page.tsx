@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <section className="wrap grid gap-x-12 gap-y-10 pb-20 pt-8 md:pt-12 lg:grid-cols-3">
+      <section className="wrap grid gap-x-12 gap-y-8 pb-20 pt-6 md:pt-8 lg:grid-cols-3 lg:gap-y-4 lg:pt-4">
         {/* Desktop: text in the left third, centred on the drawing (its bottom padding offsets the panel under it). */}
-        <div className="lg:col-span-1 lg:row-start-1 lg:self-center lg:pb-[13.5rem]">
+        <div className="lg:col-span-1 lg:row-start-1 lg:self-center lg:pb-[5.5rem]">
           <p className="eyebrow">Contact</p>
           <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-[3.6rem]">
             Book a <em className="text-forest">garden visit.</em>
@@ -26,7 +26,8 @@ export default function Contact() {
         </div>
 
         {/* On phones the form comes first; on desktop the bed sits beside the heading. */}
-        <div className="rounded-2xl bg-sage-soft/70 p-5 ring-1 ring-forest/10 sm:p-9 lg:col-span-2 lg:row-start-2">
+        <div className="rounded-2xl bg-sage-soft/70 p-5 ring-1 ring-forest/10 sm:p-8 lg:col-span-2 lg:row-start-2 lg:p-6">
+          <h2 className="mb-3 text-[1.6rem] leading-tight">Send me a note</h2>
           <ContactForm />
         </div>
 
