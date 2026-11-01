@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ButterflyArt, useButterfly } from "./Butterfly";
 import { Can } from "./Can";
+import { Droplets } from "./Droplets";
 import { PlantArt, PlantLabel } from "@/components/PlantArt";
 import { getPlant } from "@/lib/plants";
 import { CAN_BOUNDS, CAN_START, PATCHES, PATCH_RX, PATCH_RY, POUR_TIP, SCENE, SOAK_MS, cracks } from "./patches";
@@ -230,21 +231,7 @@ export function WateringCan() {
           {PATCHES.map((p, i) => grown[i] && <PlantArt key={p.plantId} plant={getPlant(p.plantId)} x={p.cx} y={p.cy - 2} />)}
 
           {/* water */}
-          {landY !== null && !reduced && (
-            <g>
-              {Array.from({ length: 8 }, (_, k) => (
-                <g key={k} transform={`translate(${tip.x - 8 + (k % 4) * 5} ${tip.y + 4})`}>
-                  <path
-                    className={s.drop}
-                    d="M0-4C1.6-1 2.4 0.4 2.4 1.6a2.4 2.4 0 0 1-4.8 0C-2.4.4-1.6-1 0-4Z"
-                    fill="#8CB8D4"
-                    style={{ "--d": `${k * -70}ms`, "--fall": `${landY - tip.y - 8}px` } as CSSProperties}
-                  />
-                </g>
-              ))}
-              {pouring >= 0 && <ellipse className={s.ripple} cx={tip.x - 2} cy={landY} rx="20" ry="5" fill="none" stroke="#8CB8D4" strokeWidth="1.5" />}
-            </g>
-          )}
+          {landY !== null && !reduced && <Droplets x={tip.x} y={tip.y} landY={landY} ripple={pouring >= 0} />}
 
           {flyIn && fly.phase !== "hidden" && (
             <g ref={fly.gRef}>

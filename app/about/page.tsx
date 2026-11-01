@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { PageIntro } from "@/components/PageIntro";
+import { PlantSomething } from "@/components/PlantSomething";
 import { CtaBand } from "@/components/CtaBand";
 import { principles, site } from "@/lib/site";
 
@@ -14,12 +14,20 @@ const degree = `a double degree in ${site.education.firstField} and ${site.educa
 export default function About() {
   return (
     <>
-      <PageIntro title={<>Bringing the craft of horticulture <em className="text-green">back into city life.</em></>}>
-        <p>
-          I&apos;m {site.person}. I design, plant and look after gardens across the Greater Toronto Area, and I do every
-          part of it myself.
-        </p>
-      </PageIntro>
+      <section className="wrap grid items-start gap-x-14 gap-y-10 pb-16 pt-14 md:grid-cols-12 md:pb-24 md:pt-20">
+        <div className="md:col-span-5">
+          <h1 className="text-[2.9rem] leading-[1] sm:text-6xl lg:text-[4.2rem]">
+            Bringing the craft of horticulture <em className="text-green">back into city life.</em>
+          </h1>
+          <p className="mt-6 max-w-prose text-[1.15rem] text-loam/75">
+            I&apos;m {site.person}. I design, plant and look after gardens across the Greater Toronto Area, and I do every
+            part of it myself.
+          </p>
+        </div>
+        <div className="md:col-span-7">
+          <PlantSomething />
+        </div>
+      </section>
 
       <section className="wrap grid gap-x-16 gap-y-14 pb-20 md:grid-cols-12 md:pb-28">
         {/* PLACEHOLDER - swap for a real photo of Shannon (e.g. /public/shannon.jpg with next/image). */}
