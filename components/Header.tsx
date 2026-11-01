@@ -3,34 +3,90 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { nav, site } from "@/lib/site";
 
 /*
  * Desktop (lg and up): at the top of the page there's no nav bar, just the long logo, large and centred.
- * Once the page scrolls past a sentinel ~60px down (or keyboard focus enters the header), the bar slides in
- * and the long logo shrinks towards the bar's left slot, where the square monogram takes over.
- * Below lg it's always the compact bar with the monogram and a menu button.
+ * Scrolling down moves that logo up into the bar's left slot (FLIP-style translate + scale) while it fades,
+ * the bar fades in with a small downward settle, and the square monogram fades in where the logo lands.
+ * Back at the very top, the same sequence plays in reverse. Below lg it's always the compact bar.
  */
+const DOCK_AT = 40; // px scrolled before docking; it only undocks again at 0
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+const BIG_W = 544; // the opening logo's width (34rem)
+const BIG_H = (BIG_W * 457) / 1800;
+const BIG_TOP = 30;
+
+type Flip = { fromX: number; toX: number; toY: number; scale: number };
+
+function useMedia(query: string) {
+  const [match, setMatch] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    setMatch(mq.matches);
+    const on = () => setMatch(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [query]);
+  return match;
+}
+
+const t = (prop: string, ms: number, delay = 0) => `${prop} ${ms}ms ${EASE} ${delay}ms`;
+
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [focusInside, setFocusInside] = useState(false);
+  const [flip, setFlip] = useState<Flip | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const slotRef = useRef<HTMLImageElement>(null);
+  const desktop = useMedia("(min-width: 1024px)");
+  const reduced = useMedia("(prefers-reduced-motion: reduce)");
 
   const docked = scrolled || focusInside;
 
+  // Scroll with hysteresis, throttled to one check per frame: dock past 40px, undock only at the very top.
   useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
-    io.observe(el);
-    return () => io.disconnect();
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setScrolled((was) => (was ? y > 0 : y > DOCK_AT));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
+
+  // Measure where the big logo starts (centred) and where it lands (the monogram's slot in the bar).
+  useEffect(() => {
+    if (!desktop) return;
+    const measure = () => {
+      const slot = slotRef.current;
+      if (!slot) return;
+      const box = slot.parentElement!; // offsets ignore transforms, so this is the bar's resting layout
+      const scale = (slot.offsetHeight * 0.92) / BIG_H;
+      setFlip({
+        fromX: (document.documentElement.clientWidth - BIG_W) / 2,
+        toX: box.offsetLeft + (box.offsetParent as HTMLElement | null ? (box.offsetParent as HTMLElement).offsetLeft : 0),
+        toY: box.offsetTop + (slot.offsetHeight - BIG_H * scale) / 2,
+        scale,
+      });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [desktop]);
 
   // Keyboard focus inside the hidden bar brings it in, so focus is never on something invisible.
   useEffect(() => {
@@ -64,44 +120,53 @@ export function Header() {
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
+  // Timings. Docking: the logo moves first, the bar follows ~120ms later, the monogram arrives last.
+  // Undocking plays it backwards. Reduced motion: a plain 200ms crossfade, nothing moves.
+  const fade = (ms: number, delay: number) => (reduced ? t("opacity", 200) : t("opacity", ms, delay));
+  const bigStyle: CSSProperties = {
+    transform:
+      !flip || reduced
+        ? `translate(${flip?.fromX ?? 0}px, ${BIG_TOP}px)`
+        : docked
+          ? `translate(${flip.toX}px, ${flip.toY}px) scale(${flip.scale})`
+          : `translate(${flip.fromX}px, ${BIG_TOP}px)`,
+    opacity: docked ? 0 : 1,
+    transition: reduced ? t("opacity", 200) : [t("transform", 650), docked ? t("opacity", 450, 200) : t("opacity", 420, 120)].join(", "),
+    visibility: flip ? "visible" : "hidden",
+  };
+  const barStyle: CSSProperties | undefined = desktop
+    ? {
+        opacity: docked ? 1 : 0,
+        transform: docked || reduced ? "none" : "translateY(-8px)",
+        transition: reduced ? t("opacity", 200) : docked ? `${t("opacity", 520, 120)}, ${t("transform", 520, 120)}` : `${t("opacity", 420, 60)}, ${t("transform", 420, 60)}`,
+        pointerEvents: docked ? "auto" : "none",
+      }
+    : undefined;
+  const slotStyle: CSSProperties | undefined = desktop
+    ? { opacity: docked ? 1 : 0, transition: docked ? fade(280, 420) : fade(220, 0) }
+    : undefined;
+
   return (
     <>
-      {/* Scrolling past this flips the desktop header into its docked state. */}
-      <div ref={sentinelRef} aria-hidden className="pointer-events-none absolute left-0 top-[60px] h-px w-px" />
-
       {/* Desktop opening logo. Mouse-only link; the bar's monogram is the keyboard route home. */}
       <Link
         href="/"
         tabIndex={-1}
         aria-hidden
-        className={`fixed left-0 top-0 z-30 hidden w-[34rem] origin-top-left transition-[transform,opacity] duration-500 ease-[cubic-bezier(.3,.7,.3,1)] motion-reduce:transition-none lg:block ${
-          docked ? "pointer-events-none opacity-0" : "opacity-100"
-        }`}
-        style={{
-          transform: docked
-            ? "translate(max(3rem, calc((100vw - 84rem) / 2 + 3rem)), 0.9rem) scale(0.36)"
-            : "translate(calc(50vw - 17rem), 1.9rem)",
-        }}
+        className={`fixed left-0 top-0 z-30 hidden w-[34rem] origin-top-left lg:block ${docked ? "pointer-events-none" : ""}`}
+        style={bigStyle}
       >
         <Image src="/logo-long.png" alt="" width={1800} height={457} priority className="h-auto w-full" />
       </Link>
 
       <header
         ref={headerRef}
-        className={`sticky top-0 z-40 border-b border-ink/10 bg-cream/95 backdrop-blur-sm transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none lg:fixed lg:inset-x-0 ${
-          docked ? "" : "lg:pointer-events-none lg:-translate-y-full lg:opacity-0"
-        }`}
+        className="sticky top-0 z-40 border-b border-ink/10 bg-cream/95 backdrop-blur-sm lg:fixed lg:inset-x-0"
+        style={barStyle}
       >
         <div className="wrap flex h-[4.25rem] items-center justify-between gap-4 sm:h-20">
           <Link href="/" className="shrink-0" aria-label={`${site.businessName}, home`}>
-            <Image
-              src="/monogram.png"
-              alt=""
-              width={600}
-              height={600}
-              priority
-              className={`h-12 w-auto transition-opacity duration-300 motion-reduce:transition-none sm:h-14 lg:delay-150 ${docked ? "" : "lg:opacity-0"}`}
-            />
+            <Image ref={slotRef} src="/monogram.png" alt="" width={600} height={600} priority className="h-12 w-auto sm:h-14" style={slotStyle} />
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">
