@@ -147,13 +147,13 @@ export function Header() {
   const bigStyle: CSSProperties = {
     transform:
       !flip || reduced
-        ? `translate(${flip?.fromX ?? 0}px, ${BIG_TOP}px)`
+        ? // Before measuring (including the server render), centre it with CSS so the first paint is right.
+          `translate(${flip ? `${flip.fromX}px` : `calc(50vw - ${BIG_W / 2}px)`}, ${BIG_TOP}px)`
         : docked
           ? `translate(${flip.toX}px, ${flip.toY}px) scale(${flip.scale})`
           : `translate(${flip.fromX}px, ${BIG_TOP}px)`,
     opacity: docked ? 0 : 1,
     transition: reduced ? t("opacity", 200) : `${t("transform", 650)}, ${t("opacity", 450, 200)}`,
-    visibility: flip ? "visible" : "hidden",
   };
   const barStyle: CSSProperties | undefined = desktop
     ? {
@@ -195,12 +195,15 @@ export function Header() {
 
       <header
         ref={headerRef}
-        className="sticky top-0 z-40 border-b border-forest/15 bg-cream-warm/95 backdrop-blur-sm lg:fixed lg:inset-x-0 lg:bg-cream-warm/90"
+        className={`sticky top-0 z-40 border-b border-forest/15 bg-cream-warm/95 backdrop-blur-sm lg:fixed lg:inset-x-0 lg:bg-cream-warm/90 ${
+          // Server render and first paint of the opening: no bar on desktop yet (inline styles take over after).
+          intro ? "lg:pointer-events-none lg:-translate-y-2 lg:opacity-0" : ""
+        }`}
         style={barStyle}
       >
         <div className="wrap flex h-[4.25rem] items-center justify-between gap-4 sm:h-20">
           <Link href="/" className="shrink-0" aria-label={`${site.businessName}, home`}>
-            <Image ref={slotRef} src="/monogram.png" alt="" width={600} height={600} priority className="h-12 w-auto sm:h-14" style={slotStyle} />
+            <Image ref={slotRef} src="/monogram.png" alt="" width={600} height={600} priority className={`h-12 w-auto sm:h-14 ${intro ? "lg:opacity-0" : ""}`} style={slotStyle} />
           </Link>
 
           <nav aria-label="Main" className="hidden lg:block">
