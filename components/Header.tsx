@@ -7,18 +7,24 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { nav, site } from "@/lib/site";
 
 /*
- * Desktop (lg and up): at the top of the page there's no nav bar, just the long logo, large and centred.
- * Scrolling down moves that logo up into the bar's left slot (FLIP-style translate + scale) while it fades,
- * the bar fades in with a small downward settle, and the square monogram fades in where the logo lands.
- * Back at the very top, the same sequence plays in reverse. Below lg it's always the compact bar.
+ * Desktop (lg and up), fresh load of the home page only: the long logo, large and centred on a cream banner,
+ * with no nav bar. The first scroll (or keyboard focus in the header) plays one transition to the compact bar:
+ * the logo moves and scales into the bar's left slot while fading, the bar fades in a beat later, and the
+ * square monogram fades in where the logo lands. It never goes back. Every other page, and Home reached by
+ * client-side navigation, always shows the compact bar. Below lg it's always the compact bar.
  */
-const DOCK_AT = 40; // px scrolled before docking; it only undocks again at 0
+const DOCK_AT = 40; // px scrolled before the one-way transition
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const BIG_W = 544; // the opening logo's width (34rem)
 const BIG_H = (BIG_W * 457) / 1800;
 const BIG_TOP = 30;
 const BANNER_H = 200; // matches the 12.5rem spacer below the header
 const BAR_H = 80;
+
+// Set once the opening has played (or been skipped) in this visit. Module scope survives client-side
+// navigation but resets on a full page load, which is exactly when the big logo should show again.
+// Only ever written in effects, so it's never shared between requests on the server.
+let introDone = false;
 
 type Flip = { fromX: number; toX: number; toY: number; scale: number };
 
@@ -39,25 +45,30 @@ const t = (prop: string, ms: number, delay = 0) => `${prop} ${ms}ms ${EASE} ${de
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [focusInside, setFocusInside] = useState(false);
+  // `intro`: the big logo is showing. `introPage`: this page view began with it (keeps its space reserved).
+  const [intro, setIntro] = useState(() => pathname === "/" && !introDone);
+  const [introPage, setIntroPage] = useState(intro);
   const [flip, setFlip] = useState<Flip | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const slotRef = useRef<HTMLImageElement>(null);
+  const firstPath = useRef(pathname);
   const desktop = useMedia("(min-width: 1024px)");
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
 
-  const docked = scrolled || focusInside;
+  const docked = !intro;
 
-  // Scroll with hysteresis, throttled to one check per frame: dock past 40px, undock only at the very top.
+  // One way only: the first scroll past 40px ends the opening for this visit.
   useEffect(() => {
+    if (!intro) return;
     let raf = 0;
     const check = () => {
       raf = 0;
-      const y = window.scrollY;
-      setScrolled((was) => (was ? y > 0 : y > DOCK_AT));
+      if (window.scrollY > DOCK_AT) {
+        introDone = true;
+        setIntro(false);
+      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(check);
@@ -68,7 +79,15 @@ export function Header() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [intro]);
+
+  // Leaving the first page (client-side) ends the opening for good, and drops its reserved space.
+  useEffect(() => {
+    if (pathname === firstPath.current) return;
+    introDone = true;
+    setIntro(false);
+    setIntroPage(false);
+  }, [pathname]);
 
   // Measure where the big logo starts (centred) and where it lands (the monogram's slot in the bar).
   useEffect(() => {
@@ -90,18 +109,18 @@ export function Header() {
     return () => window.removeEventListener("resize", measure);
   }, [desktop]);
 
-  // Keyboard focus inside the hidden bar brings it in, so focus is never on something invisible.
+  // Keyboard focus landing in the hidden bar brings it in, so focus is never on something invisible.
   useEffect(() => {
-    const inHeader = (t: EventTarget | null) => !!headerRef.current?.contains(t as Node | null);
-    const onFocusIn = (e: FocusEvent) => setFocusInside(inHeader(e.target));
-    const onPointerDown = (e: PointerEvent) => !inHeader(e.target) && setFocusInside(false);
-    document.addEventListener("focusin", onFocusIn);
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      document.removeEventListener("focusin", onFocusIn);
-      document.removeEventListener("pointerdown", onPointerDown);
+    if (!intro) return;
+    const onFocusIn = (e: FocusEvent) => {
+      if (headerRef.current?.contains(e.target as Node | null)) {
+        introDone = true;
+        setIntro(false);
+      }
     };
-  }, []);
+    document.addEventListener("focusin", onFocusIn);
+    return () => document.removeEventListener("focusin", onFocusIn);
+  }, [intro]);
 
   // Close the mobile menu on navigation.
   useEffect(() => setOpen(false), [pathname]);
@@ -122,8 +141,8 @@ export function Header() {
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
-  // Timings. Docking: the logo moves first, the bar follows ~120ms later, the monogram arrives last.
-  // Undocking plays it backwards. Reduced motion: a plain 200ms crossfade, nothing moves.
+  // Timings: the logo moves first, the bar follows ~120ms later, the monogram arrives last.
+  // Reduced motion: a plain 200ms crossfade, nothing moves.
   const fade = (ms: number, delay: number) => (reduced ? t("opacity", 200) : t("opacity", ms, delay));
   const bigStyle: CSSProperties = {
     transform:
@@ -133,14 +152,14 @@ export function Header() {
           ? `translate(${flip.toX}px, ${flip.toY}px) scale(${flip.scale})`
           : `translate(${flip.fromX}px, ${BIG_TOP}px)`,
     opacity: docked ? 0 : 1,
-    transition: reduced ? t("opacity", 200) : [t("transform", 650), docked ? t("opacity", 450, 200) : t("opacity", 420, 120)].join(", "),
+    transition: reduced ? t("opacity", 200) : `${t("transform", 650)}, ${t("opacity", 450, 200)}`,
     visibility: flip ? "visible" : "hidden",
   };
   const barStyle: CSSProperties | undefined = desktop
     ? {
         opacity: docked ? 1 : 0,
         transform: docked || reduced ? "none" : "translateY(-8px)",
-        transition: reduced ? t("opacity", 200) : docked ? `${t("opacity", 520, 120)}, ${t("transform", 520, 120)}` : `${t("opacity", 420, 60)}, ${t("transform", 420, 60)}`,
+        transition: reduced ? t("opacity", 200) : `${t("opacity", 520, 120)}, ${t("transform", 520, 120)}`,
         pointerEvents: docked ? "auto" : "none",
       }
     : undefined;
@@ -151,16 +170,18 @@ export function Header() {
     transition: reduced ? t("opacity", 200) : t("transform", 650),
   };
   const slotStyle: CSSProperties | undefined = desktop
-    ? { opacity: docked ? 1 : 0, transition: docked ? fade(280, 420) : fade(220, 0) }
+    ? { opacity: docked ? 1 : 0, transition: fade(280, 420) }
     : undefined;
 
   return (
     <>
-      {/* Desktop cream banner behind the opening logo, with a quiet brand-green rule along its bottom edge. */}
-      <div aria-hidden className="fixed inset-x-0 top-0 z-20 hidden origin-top border-b border-forest/15 bg-cream-warm lg:block" style={{ height: BANNER_H, ...bannerStyle }} />
+      {introPage && (
+        <>
+          {/* Desktop cream banner behind the opening logo, with a quiet brand-green rule along its bottom edge. */}
+          <div aria-hidden className="fixed inset-x-0 top-0 z-20 hidden origin-top border-b border-forest/15 bg-cream-warm lg:block" style={{ height: BANNER_H, ...bannerStyle }} />
 
-      {/* Desktop opening logo. Mouse-only link; the bar's monogram is the keyboard route home. */}
-      <Link
+          {/* Desktop opening logo. Mouse-only link; the bar's monogram is the keyboard route home. */}
+          <Link
         href="/"
         tabIndex={-1}
         aria-hidden
@@ -168,7 +189,9 @@ export function Header() {
         style={bigStyle}
       >
         <Image src="/logo-long.png" alt="" width={1800} height={457} priority className="h-auto w-full" />
-      </Link>
+          </Link>
+        </>
+      )}
 
       <header
         ref={headerRef}
@@ -251,8 +274,8 @@ export function Header() {
         </div>
       </header>
 
-      {/* Reserves the opening logo's space on desktop so nothing shifts when the header docks. */}
-      <div aria-hidden className="hidden h-[12.5rem] lg:block" />
+      {/* Reserves the bar's space on desktop (the banner's, on a page that opened with the big logo, so nothing shifts). */}
+      <div aria-hidden className={`hidden lg:block ${introPage ? "h-[12.5rem]" : "h-20"}`} />
     </>
   );
 }
