@@ -133,7 +133,9 @@ function SteppingStones({ points }: { points: Pt[] }) {
     const [x1, y1] = points[i], [x2, y2] = points[i + 1];
     const len = Math.hypot(x2 - x1, y2 - y1);
     const a = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
-    for (let t = i === 0 ? 0 : 10; t < len; t += 20) stones.push({ x: x1 + ((x2 - x1) * t) / len, y: y1 + ((y2 - y1) * t) / len, a });
+    // Rounded so server and browser render identical attributes.
+    for (let t = i === 0 ? 0 : 10; t < len; t += 20)
+      stones.push({ x: +(x1 + ((x2 - x1) * t) / len).toFixed(2), y: +(y1 + ((y2 - y1) * t) / len).toFixed(2), a: +a.toFixed(2) });
   }
   return (
     <g>
@@ -214,7 +216,7 @@ export function PlanDrawing({ plan, state, id }: { plan: Plan; state: "before" |
                 {Array.from({ length: d.n }, (_, i) => {
                   const rr = d.n === 1 ? 0 : d.spread * Math.sqrt((i + 0.5) / d.n);
                   const a = i * GOLDEN + di;
-                  return <PlantSymbol key={i} x={d.cx + Math.cos(a) * rr} y={d.cy + Math.sin(a) * rr} r={sp.r} form={sp.form} tone={sp.tone} />;
+                  return <PlantSymbol key={i} x={+(d.cx + Math.cos(a) * rr).toFixed(2)} y={+(d.cy + Math.sin(a) * rr).toFixed(2)} r={sp.r} form={sp.form} tone={sp.tone} />;
                 })}
               </g>
             );

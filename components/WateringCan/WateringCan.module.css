@@ -112,3 +112,59 @@
     transition: none;
   }
 }
+
+/* Butterfly easter egg. Wings are drawn out from the body at (0,0). */
+.wing {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+
+.flap .wing {
+  animation: flap 220ms ease-in-out infinite alternate;
+}
+
+.shake .wing {
+  animation: shake 90ms linear infinite alternate;
+}
+
+.still .wing {
+  transform: scaleX(0.25);
+  transition: transform 200ms ease;
+}
+
+.flick {
+  animation: flick 500ms ease-out both;
+  animation-delay: var(--d, 0ms);
+}
+
+.oops {
+  transition: opacity 400ms ease;
+}
+
+@keyframes flap {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.2); }
+}
+
+@keyframes shake {
+  from { transform: scaleX(0.55) rotate(-6deg); }
+  to { transform: scaleX(0.95) rotate(6deg); }
+}
+
+@keyframes flick {
+  from { transform: translate(0, 0); opacity: 0.9; }
+  to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flap .wing,
+  .shake .wing {
+    animation: none;
+  }
+  .flick {
+    display: none;
+  }
+  .oops {
+    transition: none;
+  }
+}

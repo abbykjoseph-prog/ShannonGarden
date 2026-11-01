@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { ButterflyArt, useButterfly } from "./Butterfly";
 import { Can } from "./Can";
 import { Plant } from "./Plants";
 import { CAN_BOUNDS, CAN_START, PATCHES, PATCH_RX, PATCH_RY, POUR_TIP, SCENE, SOAK_MS, cracks } from "./patches";
@@ -43,14 +44,42 @@ export function WateringCan() {
   moistRef.current = moist;
   const autoRef = useRef(auto);
   autoRef.current = auto;
+  const canRef = useRef(can);
+  canRef.current = can;
+  const draggingRef = useRef(dragging);
+  draggingRef.current = dragging;
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [lastBloom, setLastBloom] = useState<number | null>(null);
+  const [flyIn, setFlyIn] = useState(false);
 
   const pouring = auto ?? (dragging ? patchUnder(can.x, moist) : -1);
   const grown = moist.map((m) => m >= 1);
   const allGrown = grown.every(Boolean);
   const crackPaths = useMemo(() => PATCHES.map((_, i) => cracks(i + 3)), []);
 
+  // The butterfly arrives once the last flower has opened.
+  useEffect(() => {
+    if (!allGrown) {
+      setFlyIn(false);
+      return;
+    }
+    const t = window.setTimeout(() => setFlyIn(true), reduced ? 0 : 2200);
+    return () => window.clearTimeout(t);
+  }, [allGrown, reduced]);
+
+  const moveCan = useCallback((pos: { x: number; y: number } | "rest") => {
+    setCan(
+      pos === "rest"
+        ? CAN_START
+        : { x: clamp(pos.x, CAN_BOUNDS.minX, CAN_BOUNDS.maxX), y: clamp(pos.y, CAN_BOUNDS.minY, CAN_BOUNDS.maxY) },
+    );
+  }, []);
+
+  const fly = useButterfly({ active: flyIn, reduced, wrapRef, canRef, draggingRef, moveCan });
+
   const finish = useCallback((i: number) => {
     const p = PATCHES[i];
+    setLastBloom(i);
     setAnnounce(`The ${p.patchName} patch is soaked. ${p.common}, ${p.latin}, is coming into flower.`);
   }, []);
 
@@ -134,15 +163,17 @@ export function WateringCan() {
     moistRef.current = fresh();
     setAuto(null);
     setCan(CAN_START);
+    setLastBloom(null);
     setAnnounce("The bed is replanted with dry soil.");
   };
 
   const tip = { x: can.x + POUR_TIP.x, y: can.y + POUR_TIP.y };
-  const target = pouring >= 0 ? PATCHES[pouring] : null;
+  // Where the water lands: a dry patch, or the butterfly.
+  const landY = pouring >= 0 ? PATCHES[pouring].cy : fly.pouringOn ? fly.posRef.current.y : null;
 
   return (
     <figure className="relative">
-      <div className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
+      <div ref={wrapRef} className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${SCENE.w} ${SCENE.h}`}
@@ -198,7 +229,7 @@ export function WateringCan() {
           {PATCHES.map((p, i) => grown[i] && <Plant key={p.kind} kind={p.kind} cx={p.cx} cy={p.cy - 2} />)}
 
           {/* water */}
-          {target && !reduced && (
+          {landY !== null && !reduced && (
             <g>
               {Array.from({ length: 8 }, (_, k) => (
                 <g key={k} transform={`translate(${tip.x - 8 + (k % 4) * 5} ${tip.y + 4})`}>
@@ -206,11 +237,17 @@ export function WateringCan() {
                     className={s.drop}
                     d="M0-4C1.6-1 2.4 0.4 2.4 1.6a2.4 2.4 0 0 1-4.8 0C-2.4.4-1.6-1 0-4Z"
                     fill="#8CB8D4"
-                    style={{ "--d": `${k * -70}ms`, "--fall": `${target.cy - tip.y - 8}px` } as CSSProperties}
+                    style={{ "--d": `${k * -70}ms`, "--fall": `${landY - tip.y - 8}px` } as CSSProperties}
                   />
                 </g>
               ))}
-              <ellipse className={s.ripple} cx={tip.x - 2} cy={target.cy} rx="20" ry="5" fill="none" stroke="#8CB8D4" strokeWidth="1.5" />
+              {pouring >= 0 && <ellipse className={s.ripple} cx={tip.x - 2} cy={landY} rx="20" ry="5" fill="none" stroke="#8CB8D4" strokeWidth="1.5" />}
+            </g>
+          )}
+
+          {flyIn && fly.phase !== "hidden" && (
+            <g ref={fly.gRef}>
+              <ButterflyArt phase={fly.phase} />
             </g>
           )}
 
@@ -223,7 +260,7 @@ export function WateringCan() {
               onPointerDown={onCanDown}
               style={{ cursor: dragging ? "grabbing" : "grab", touchAction: "none" }}
             >
-              <Can tilted={pouring >= 0} />
+              <Can tilted={pouring >= 0 || fly.pouringOn} />
               {/* generous invisible grab area for fingers */}
               <circle r="72" cx="20" cy="-10" fill="transparent" />
             </g>
@@ -248,22 +285,25 @@ export function WateringCan() {
           />
         ))}
 
-        {/* plant tags, once in flower */}
-        {PATCHES.map(
-          (p, i) =>
-            grown[i] && (
-              <div
-                key={p.kind}
-                className={`${s.tag} pointer-events-none absolute w-[30%] -translate-x-1/2 text-center`}
-                style={{ left: `${(p.cx / SCENE.w) * 100}%`, top: `${(352 / SCENE.h) * 100}%` }}
-              >
-                <span className="inline-block rounded-[3px] bg-paper px-2 py-1 leading-tight shadow-[0_1px_0_rgb(30_42_31/0.2)] sm:px-2.5">
-                  <span className="block text-[0.68rem] font-semibold sm:text-[0.8rem]">{p.common}</span>
-                  <span className="latin block text-[0.74rem] text-loam/75 sm:text-[0.9rem]">{p.latin}</span>
-                </span>
-              </div>
-            ),
+        {flyIn && (
+          <button
+            ref={fly.buttonRef}
+            type="button"
+            onClick={fly.waterFromButton}
+            aria-label="Water the butterfly"
+            className="absolute left-0 top-0 -ml-6 -mt-6 h-12 w-12 rounded-full"
+          />
         )}
+
+        <p
+          className={`${s.oops} pointer-events-none absolute inset-x-0 bottom-2 text-center`}
+          style={{ opacity: fly.oops ? 1 : 0 }}
+          aria-hidden
+        >
+          <span className="inline-block rounded-full bg-paper px-3 py-1 text-[0.88rem] font-semibold sm:text-[0.95rem]">
+            Oops! Easy there, we need our pollinators.
+          </span>
+        </p>
 
         <p
           className={`${s.hint} pointer-events-none absolute left-4 top-4 rounded-full bg-paper/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-loam`}
@@ -274,25 +314,41 @@ export function WateringCan() {
         </p>
       </div>
 
-      <figcaption className="mt-4 flex min-h-[2.75rem] flex-wrap items-baseline justify-between gap-x-6 gap-y-2 text-[0.98rem]">
-        {allGrown ? (
-          <p className={s.done}>
-            That&apos;s the job, more or less.{" "}
-            <Link href="/contact" className="link font-semibold">
-              Want me to do yours?
-            </Link>
-          </p>
-        ) : (
-          <p className="text-loam/65">Three native Ontario perennials, waiting for water.</p>
-        )}
-        {moist.some((m) => m > 0) && (
-          <button type="button" onClick={replant} className="link text-[0.95rem] text-loam/75">
-            Replant
-          </button>
-        )}
+      <figcaption className="mt-4">
+        {/* Fixed height, sized for the longest name wrapping to two lines, so Replant never moves. */}
+        <div className="h-[7.25rem]">
+          {lastBloom !== null ? (
+            <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-paper px-4 py-2.5 ring-1 ring-loam/10`}>
+              <p className="text-[1.2rem] font-semibold leading-tight text-loam">{PATCHES[lastBloom].common}</p>
+              <p className="latin mt-0.5 text-[1rem] leading-snug text-loam/80">{PATCHES[lastBloom].latin}</p>
+            </div>
+          ) : (
+            <p className="pt-2.5 text-loam/70">Three native Ontario perennials, waiting for water.</p>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={replant}
+          className={`link text-[0.98rem] text-loam/80 ${moist.some((m) => m > 0) ? "" : "invisible"}`}
+        >
+          Replant the bed
+        </button>
+        <p className="mt-3 min-h-[1.7em] text-[0.98rem]">
+          {allGrown && (
+            <span className={s.done}>
+              That&apos;s the job, more or less.{" "}
+              <Link href="/contact" className="link font-semibold">
+                Want me to do yours?
+              </Link>
+            </span>
+          )}
+        </p>
       </figcaption>
       <p className="sr-only" aria-live="polite">
         {announce}
+      </p>
+      <p className="sr-only" aria-live="polite">
+        {fly.announce}
       </p>
     </figure>
   );
