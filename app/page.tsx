@@ -58,13 +58,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section aria-labelledby="services" className="bg-cream-warm/60">
+      {/* /#services lands here; the scroll margin keeps the label clear of the fixed header. */}
+      <section id="services" aria-labelledby="services-title" className="scroll-mt-24 bg-cream-warm/60">
         <div className="wrap py-20 md:py-28">
           <div className="grid gap-6 md:grid-cols-12">
-            <h2 id="services" className="text-[2.4rem] leading-[1.05] sm:text-5xl md:col-span-6">What I can do for your garden</h2>
-            <p className="max-w-prose text-ink/70 md:col-span-5 md:col-start-8 md:pt-3">
-              Every job is priced after I&apos;ve seen the garden. Most people start with one of these and keep me on for the
-              seasons after.
+            <div className="md:col-span-6">
+              <p className="eyebrow">Services</p>
+              <h2 id="services-title" className="mt-4 text-[2.4rem] leading-[1.05] sm:text-5xl">
+                What I can do for your garden
+              </h2>
+            </div>
+            <p className="max-w-prose text-ink/70 md:col-span-5 md:col-start-8 md:self-end">
+              Five ways I can help. Every job is priced after I&apos;ve seen your garden, and most people start with one and
+              keep me on for the seasons after.
             </p>
           </div>
 
@@ -85,6 +91,11 @@ export default function Home() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link href="/contact" className="btn-primary">Book a garden visit</Link>
+            <p className="text-ink/65">Not sure which you need? We can work it out on the visit.</p>
+          </div>
         </div>
       </section>
 
