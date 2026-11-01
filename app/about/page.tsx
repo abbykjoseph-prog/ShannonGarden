@@ -9,14 +9,19 @@ export const metadata: Metadata = {
   description: `Meet ${site.ownerName}: a lifetime of growing things and ${site.yearsProfessional} years of garden work for clients, offering garden design and care in Toronto and the GTA.`,
 };
 
-const degree = `a double degree in ${site.education.firstField} and ${site.education.secondField}`;
+// Until the second field is confirmed, say only what's known (never show a placeholder on the page).
+const second = site.education.secondField.trim();
+const degree =
+  !second || /todo/i.test(second)
+    ? `a degree in ${site.education.firstField}`
+    : `a double degree in ${site.education.firstField} and ${second}`;
 
 export default function About() {
   return (
     <>
-      <section className="wrap grid gap-x-12 gap-y-8 pb-12 pt-8 md:pt-12 lg:grid-cols-3 lg:pb-16">
+      <section className="wrap grid gap-x-12 gap-y-8 pb-10 pt-6 md:pt-8 lg:grid-cols-3 lg:pb-8">
         {/* Desktop: text in the left third, centred on the drawing (its bottom padding offsets the panel under it). */}
-        <div className="lg:col-span-1 lg:self-center lg:pb-[13.5rem]">
+        <div className="lg:col-span-1 lg:self-center lg:pb-[7rem]">
           <p className="eyebrow">About</p>
           <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-5xl">
             Bringing the craft of horticulture <em className="text-forest">back into city life.</em>

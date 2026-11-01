@@ -12,14 +12,14 @@ import s from "./PlantSomething.module.css";
 type Phase = "dig" | "plant" | "water" | "grown";
 type Pt = { x: number; y: number };
 
-// A wide (16:10) scene: the seed tray on the left, the plot in the middle, the tools waiting on the right.
+// A wide (about 1.9:1) scene: the seed tray on the left, the plot in the middle, the tools waiting on the right.
 const W = 560;
-const H = 350;
-const SPOT = { x: 300, y: 262 };
-const PILE = { x: 354, y: 258 };
-const SHOVEL_REST = { x: 505, y: 214 };
-const TRAY = { x: 64, y: 328 };
-const CAN_REST = { x: 430, y: 92 };
+const H = 300;
+const SPOT = { x: 300, y: 222 };
+const PILE = { x: 354, y: 218 };
+const SHOVEL_REST = { x: 505, y: 176 };
+const TRAY = { x: 64, y: 284 };
+const CAN_REST = { x: 430, y: 80 };
 const DIGS = 1; // one push of the shovel digs the whole hole
 const CAN_K = 0.78; // the can is drawn for the larger home scene
 const HOLE_SCALE = [0, 1];
@@ -96,7 +96,7 @@ export function PlantSomething() {
   }, [plant]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const moveShovel = (p: Pt) => {
-    const next = { x: clamp(p.x, 40, 540), y: clamp(p.y, 112, SPOT.y + 4) };
+    const next = { x: clamp(p.x, 40, 540), y: clamp(p.y, 140, SPOT.y + 4) };
     setShovel(next);
     const inSoil = Math.abs(next.x - SPOT.x) < 38 && next.y >= SPOT.y - 6;
     if (inSoil && armed.current) {
@@ -177,7 +177,7 @@ export function PlantSomething() {
       setAnnounce(`Watered in. ${plant.commonName}, ${plant.botanicalName}, is growing.`);
       return;
     }
-    setCan({ x: SPOT.x - POUR_TIP.x * CAN_K, y: 130 });
+    setCan({ x: SPOT.x - POUR_TIP.x * CAN_K, y: 100 });
     later(() => setAutoPour(true), 480);
   };
 
@@ -212,14 +212,14 @@ export function PlantSomething() {
 
   return (
     <figure>
-      <ol className="mb-3 flex gap-5 text-[0.95rem]" aria-label="Steps">
+      <ol className="mb-2 flex gap-5 text-[0.92rem]" aria-label="Steps">
         {STEPS.map((x, i) => {
           const done = phase === "grown" || i < step;
           const now = i === step;
           return (
             <li key={x.phase} aria-current={now ? "step" : undefined} className={`flex items-center gap-2 ${now ? "font-semibold text-ink" : done ? "text-forest" : "text-ink/55"}`}>
               <span
-                className={`flex h-6 w-6 items-center justify-center rounded-full border text-[0.8rem] ${
+                className={`flex h-5 w-5 items-center justify-center rounded-full border text-[0.8rem] ${
                   now ? "border-ink bg-ink text-cream" : done ? "border-forest bg-forest text-cream" : "border-ink/40"
                 }`}
               >
@@ -235,15 +235,15 @@ export function PlantSomething() {
       <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
           {/* sky, sun and distant shrubs, as in the original home scene */}
-<circle cx="490" cy="60" r="28" fill="#F3E2B8" opacity="0.85" />
-          <path d="M34 80c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
-          <path d="M0 240c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
-          <rect x="0" y="292" width={W} height="58" fill="#8FA884" />
+<circle cx="490" cy="50" r="26" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 64c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 200c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="252" width={W} height="48" fill="#8FA884" />
 
           {/* a patch of open ground */}
-          <path d="M150 232H450L482 292H118Z" fill="#6B4F3A" />
-          <path d="M150 232H450" stroke="#5A4231" strokeWidth="2" />
-          <path d="M118 292H482L480 298H120Z" fill="#5A4231" />
+          <path d="M150 192H450L482 252H118Z" fill="#6B4F3A" />
+          <path d="M150 192H450" stroke="#5A4231" strokeWidth="2" />
+          <path d="M118 252H482L480 258H120Z" fill="#5A4231" />
 
           {/* watered soil */}
           <ellipse cx={SPOT.x} cy={SPOT.y + 2} rx="46" ry="13" fill="#3E2C20" opacity={moist * 0.95} />
@@ -284,7 +284,7 @@ export function PlantSomething() {
               <g className={s.sink} style={{ transform: sunk ? "scale(0.2)" : "none", opacity: sunk ? 0 : 1 }}>
                 <g
                   style={{ cursor: dragging === "item" ? "grabbing" : "grab", touchAction: "none" }}
-                  onPointerDown={(e) => phase === "plant" && begin(e, "item", item, (p) => setItem({ x: clamp(p.x, 20, 540), y: clamp(p.y, 60, 340) }), dropItem)}
+                  onPointerDown={(e) => phase === "plant" && begin(e, "item", item, (p) => setItem({ x: clamp(p.x, 20, 540), y: clamp(p.y, 56, 296) }), dropItem)}
                 >
                   <StartItem plant={plant} />
                   <rect x="-30" y="-56" width="60" height="64" fill="transparent" />
@@ -315,7 +315,7 @@ export function PlantSomething() {
             <g className={dragging === "can" ? "" : s.glide} style={{ transform: `translate(${can.x}px, ${can.y}px)` }}>
               <g
                 style={{ cursor: dragging === "can" ? "grabbing" : "grab", touchAction: "none" }}
-                onPointerDown={(e) => !autoPour && begin(e, "can", can, (p) => setCan({ x: clamp(p.x, 44, 470), y: clamp(p.y, 64, 196) }), () => undefined)}
+                onPointerDown={(e) => !autoPour && begin(e, "can", can, (p) => setCan({ x: clamp(p.x, 44, 470), y: clamp(p.y, 56, 160) }), () => undefined)}
               >
                 <g transform={`scale(${CAN_K})`}>
                   <Can tilted={pouring} />
@@ -344,12 +344,12 @@ export function PlantSomething() {
         )}
       </div>
 
-      <figcaption className="mt-4">
+      <figcaption className="mt-3">
         {/* Fixed height, sized for the longest name and description, so the button below never moves. */}
-        <div className="h-[11rem] sm:h-[9.5rem]">
+        <div className="h-[11rem] md:h-[5.75rem]">
           {phase === "grown" ? (
             <div key={plant.id} className="animate-[settle_400ms_ease-out_1.2s_both] motion-reduce:animate-none">
-              <PlantLabel plant={plant} description />
+              <PlantLabel plant={plant} description row />
             </div>
           ) : (
             <p className="pt-1 text-ink/65">Something from my plant list is waiting in the tray. Dig, plant, water, and see what grows.</p>
