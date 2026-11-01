@@ -137,9 +137,12 @@ export const projects: {
   done: string[];
   plan: Plan;
   photos?: { before: string; after: string };
+  /** Where the project sits on the small GTA map on /work (400 x 260 drawing units). */
+  map: { x: number; y: number };
 }[] = [
   {
     slug: "leslieville",
+    map: { x: 292, y: 144 },
     title: "A shady backyard that finally fills in",
     place: "Leslieville",
     type: "Backyard design and planting",
@@ -185,6 +188,7 @@ export const projects: {
   },
   {
     slug: "midtown",
+    map: { x: 258, y: 98 },
     title: "From lawn to pollinator front yard",
     place: "Midtown",
     type: "Native and pollinator garden",
@@ -234,6 +238,7 @@ export const projects: {
   },
   {
     slug: "liberty-village",
+    map: { x: 236, y: 150 },
     title: "A windproof condo terrace",
     place: "Liberty Village",
     type: "Terrace and containers",
@@ -276,6 +281,7 @@ export const projects: {
   },
   {
     slug: "oakville",
+    map: { x: 70, y: 196 },
     title: "A woodland garden under old oaks",
     place: "Oakville",
     type: "Shade garden and seasonal care",

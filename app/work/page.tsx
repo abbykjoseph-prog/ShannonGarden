@@ -3,6 +3,7 @@ import { PageIntro } from "@/components/PageIntro";
 import { CtaBand } from "@/components/CtaBand";
 import { PlanSlider } from "@/components/PlanSlider";
 import { PlantTag } from "@/components/PlantTag";
+import { ProjectMap } from "@/components/ProjectMap";
 import { projects, site, testimonials } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -13,7 +14,15 @@ export const metadata: Metadata = {
 export default function Work() {
   return (
     <>
-      <PageIntro eyebrow="Work & testimonials" title={<>Gardens across the city, <em className="text-forest">tended by one pair of hands.</em></>}>
+      <PageIntro
+        eyebrow="Work & testimonials"
+        aside={
+          // Smaller under the text on tablets, hidden on phones so the first project isn't pushed down.
+          <div className="hidden max-w-md sm:block lg:max-w-none">
+            <ProjectMap />
+          </div>
+        }
+        title={<>Gardens across the city, <em className="text-forest">tended by one pair of hands.</em></>}>
         <p>
           A few recent projects from around the GTA. Drag the slider on each plan to compare the garden before and
           after. Every one was designed, planted and looked after by me.
@@ -24,7 +33,7 @@ export default function Work() {
         {projects.map((p, i) => {
           const words = testimonials.find((t) => t.project === p.slug);
           return (
-            <article key={p.slug} aria-labelledby={`${p.slug}-title`} className="grid gap-x-14 gap-y-8 md:grid-cols-12">
+            <article key={p.slug} id={p.slug} tabIndex={-1} aria-labelledby={`${p.slug}-title`} className="grid scroll-mt-28 gap-x-14 gap-y-8 focus:outline-none md:grid-cols-12">
               <header className={`md:col-span-12 ${i % 2 ? "md:pl-[8%]" : ""}`}>
                 <p className="text-[0.98rem] text-ink/65">
                   {p.place}, {p.year} · {p.type}
