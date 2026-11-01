@@ -308,7 +308,7 @@ export function DesignBed() {
 
       <figcaption className="mt-4">
         {/* Fixed height, sized for the longest name and description, so the button below never moves. */}
-        <div className="h-[15rem] sm:h-[11.5rem]">
+        <div className="h-[11rem] sm:h-[9.5rem]">
           {info ? (
             <div key={info.id}>
               <PlantLabel plant={info} description />

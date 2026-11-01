@@ -347,7 +347,7 @@ export function PlantSomething() {
 
       <figcaption className="mt-4">
         {/* Fixed height, sized for the longest name and description, so the button below never moves. */}
-        <div className="h-[15rem] sm:h-[11.5rem]">
+        <div className="h-[11rem] sm:h-[9.5rem]">
           {phase === "grown" ? (
             <div key={plant.id} className="animate-[settle_400ms_ease-out_1.2s_both] motion-reduce:animate-none">
               <PlantLabel plant={plant} description />
