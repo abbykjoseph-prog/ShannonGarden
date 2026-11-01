@@ -72,7 +72,8 @@ export default function Home() {
             {services.map((s, i) => (
               <li key={s.slug} className="grid gap-x-12 gap-y-4 border-b border-ink/20 py-10 md:grid-cols-12 md:py-12">
                 <div className={i % 2 ? "md:col-span-5 md:col-start-2" : "md:col-span-5"}>
-                  <h3 className={i === 0 ? "text-[2.2rem] leading-[1.05] sm:text-[2.75rem]" : "text-[1.9rem] leading-[1.1] sm:text-[2.25rem]"}>
+                  <span className="font-display text-sm italic text-clay">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className={`mt-1 ${i === 0 ? "text-[2.2rem] leading-[1.05] sm:text-[2.75rem]" : "text-[1.9rem] leading-[1.1] sm:text-[2.25rem]"}`}>
                     {s.title}
                   </h3>
                   <p className="mt-2 font-display text-[1.25rem] italic leading-snug text-forest">{s.lede}</p>
