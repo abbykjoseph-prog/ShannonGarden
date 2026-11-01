@@ -14,10 +14,11 @@ const degree = `a double degree in ${site.education.firstField} and ${site.educa
 export default function About() {
   return (
     <>
-      <section className="wrap grid items-start gap-x-14 gap-y-10 pb-16 pt-14 md:grid-cols-12 md:pb-24 md:pt-20">
-        <div className="md:col-span-5">
+      <section className="wrap grid gap-x-12 gap-y-8 pb-12 pt-8 md:pt-12 lg:grid-cols-3 lg:pb-16">
+        {/* Desktop: text in the left third, centred on the drawing (its bottom padding offsets the panel under it). */}
+        <div className="lg:col-span-1 lg:self-center lg:pb-[13.5rem]">
           <p className="eyebrow">About</p>
-          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-[4.2rem]">
+          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-5xl">
             Bringing the craft of horticulture <em className="text-forest">back into city life.</em>
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-ink/75">
@@ -25,7 +26,7 @@ export default function About() {
             part of it myself.
           </p>
         </div>
-        <div className="md:col-span-7">
+        <div className="lg:col-span-2">
           <PlantSomething />
         </div>
       </section>

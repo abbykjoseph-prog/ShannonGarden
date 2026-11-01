@@ -12,10 +12,11 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <section className="wrap grid gap-x-16 gap-y-12 pb-20 pt-14 md:grid-cols-12 md:pt-20">
-        <div className="md:col-span-5 md:row-start-1">
+      <section className="wrap grid gap-x-12 gap-y-10 pb-20 pt-8 md:pt-12 lg:grid-cols-3">
+        {/* Desktop: text in the left third, centred on the drawing (its bottom padding offsets the panel under it). */}
+        <div className="lg:col-span-1 lg:row-start-1 lg:self-center lg:pb-[13.5rem]">
           <p className="eyebrow">Contact</p>
-          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl md:text-7xl">
+          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-[3.6rem]">
             Book a <em className="text-forest">garden visit.</em>
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-ink/75">
@@ -25,15 +26,15 @@ export default function Contact() {
         </div>
 
         {/* On phones the form comes first; on desktop the bed sits beside the heading. */}
-        <div className="rounded-2xl bg-sage-soft/70 p-5 ring-1 ring-forest/10 sm:p-9 md:col-span-7 md:row-start-2">
+        <div className="rounded-2xl bg-sage-soft/70 p-5 ring-1 ring-forest/10 sm:p-9 lg:col-span-2 lg:row-start-2">
           <ContactForm />
         </div>
 
-        <div className="md:col-span-7 md:col-start-6 md:row-start-1">
+        <div className="lg:col-span-2 lg:col-start-2 lg:row-start-1">
           <DesignBed />
         </div>
 
-        <aside className="space-y-12 md:col-span-5 md:col-start-8 md:row-start-2">
+        <aside className="space-y-12 lg:col-span-1 lg:col-start-3 lg:row-start-2">
           <div>
             <h2 className="text-[1.9rem] leading-tight">Reach me directly</h2>
             <ul className="mt-3 space-y-1 text-[1.15rem]">

@@ -12,13 +12,14 @@ import s from "./PlantSomething.module.css";
 type Phase = "dig" | "plant" | "water" | "grown";
 type Pt = { x: number; y: number };
 
-const W = 420;
-const H = 360;
-const SPOT = { x: 200, y: 266 };
-const PILE = { x: 254, y: 262 };
-const SHOVEL_REST = { x: 352, y: 214 };
-const TRAY = { x: 66, y: 328 };
-const CAN_REST = { x: 292, y: 92 };
+// A wide (16:10) scene: the seed tray on the left, the plot in the middle, the tools waiting on the right.
+const W = 560;
+const H = 350;
+const SPOT = { x: 300, y: 262 };
+const PILE = { x: 354, y: 258 };
+const SHOVEL_REST = { x: 505, y: 214 };
+const TRAY = { x: 64, y: 328 };
+const CAN_REST = { x: 430, y: 92 };
 const DIGS = 3;
 const CAN_K = 0.78; // the can is drawn for the larger home scene
 const HOLE_SCALE = [0, 0.55, 0.8, 1];
@@ -95,7 +96,7 @@ export function PlantSomething() {
   }, [plant]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const moveShovel = (p: Pt) => {
-    const next = { x: clamp(p.x, 40, 400), y: clamp(p.y, 112, SPOT.y + 4) };
+    const next = { x: clamp(p.x, 40, 540), y: clamp(p.y, 112, SPOT.y + 4) };
     setShovel(next);
     const inSoil = Math.abs(next.x - SPOT.x) < 38 && next.y >= SPOT.y - 6;
     if (inSoil && armed.current) {
@@ -234,15 +235,15 @@ export function PlantSomething() {
       <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
           {/* sky, sun and distant shrubs, as in the original home scene */}
-          <circle cx="350" cy="64" r="30" fill="#F3E2B8" opacity="0.85" />
-          <path d="M34 84c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
-          <path d="M0 250c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 8 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
-          <rect x="0" y="300" width={W} height="60" fill="#8FA884" />
+<circle cx="490" cy="60" r="28" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 80c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 240c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="292" width={W} height="58" fill="#8FA884" />
 
           {/* a patch of open ground */}
-          <path d="M50 236H370L398 300H22Z" fill="#6B4F3A" />
-          <path d="M50 236H370" stroke="#5A4231" strokeWidth="2" />
-          <path d="M22 300H398L396 306H24Z" fill="#5A4231" />
+          <path d="M150 232H450L482 292H118Z" fill="#6B4F3A" />
+          <path d="M150 232H450" stroke="#5A4231" strokeWidth="2" />
+          <path d="M118 292H482L480 298H120Z" fill="#5A4231" />
 
           {/* watered soil */}
           <ellipse cx={SPOT.x} cy={SPOT.y + 2} rx="46" ry="13" fill="#3E2C20" opacity={moist * 0.95} />
@@ -283,7 +284,7 @@ export function PlantSomething() {
               <g className={s.sink} style={{ transform: sunk ? "scale(0.2)" : "none", opacity: sunk ? 0 : 1 }}>
                 <g
                   style={{ cursor: dragging === "item" ? "grabbing" : "grab", touchAction: "none" }}
-                  onPointerDown={(e) => phase === "plant" && begin(e, "item", item, (p) => setItem({ x: clamp(p.x, 20, 400), y: clamp(p.y, 60, 340) }), dropItem)}
+                  onPointerDown={(e) => phase === "plant" && begin(e, "item", item, (p) => setItem({ x: clamp(p.x, 20, 540), y: clamp(p.y, 60, 340) }), dropItem)}
                 >
                   <StartItem plant={plant} />
                   <rect x="-30" y="-56" width="60" height="64" fill="transparent" />
@@ -314,7 +315,7 @@ export function PlantSomething() {
             <g className={dragging === "can" ? "" : s.glide} style={{ transform: `translate(${can.x}px, ${can.y}px)` }}>
               <g
                 style={{ cursor: dragging === "can" ? "grabbing" : "grab", touchAction: "none" }}
-                onPointerDown={(e) => !autoPour && begin(e, "can", can, (p) => setCan({ x: clamp(p.x, 44, 320), y: clamp(p.y, 64, 200) }), () => undefined)}
+                onPointerDown={(e) => !autoPour && begin(e, "can", can, (p) => setCan({ x: clamp(p.x, 44, 470), y: clamp(p.y, 64, 196) }), () => undefined)}
               >
                 <g transform={`scale(${CAN_K})`}>
                   <Can tilted={pouring} />

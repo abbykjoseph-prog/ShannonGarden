@@ -8,15 +8,16 @@ import s from "./DesignBed.module.css";
 
 type Pt = { x: number; y: number };
 
-const W = 480;
-const H = 380;
+// A wide (16:10) scene: a two-shelf tray on the left, the raised bed to its right.
+const W = 560;
+const H = 350;
 // Four plants of different heights and colours, from lib/plants.ts.
 const IDS = ["coneflower", "lavender", "rudbeckia", "hosta"];
-const SHELF_Y = 110;
-const SLOTS: Record<string, Pt> = Object.fromEntries(IDS.map((id, i) => [id, { x: 78 + i * 108, y: SHELF_Y }]));
+const SHELVES = [150, 300];
+const SLOTS: Record<string, Pt> = Object.fromEntries(IDS.map((id, i) => [id, { x: i % 2 ? 132 : 58, y: SHELVES[i >> 1] }]));
 // The bed's soil surface, in a slight 3/4 view: a back edge and a wider front edge.
-const BED = { backY: 170, frontY: 296, backL: 70, backR: 410, frontL: 30, frontR: 450 };
-const CENTRE = { x: 240, y: 236 };
+const BED = { backY: 196, frontY: 282, backL: 238, backR: 530, frontL: 214, frontR: 548 };
+const CENTRE = { x: 384, y: 240 };
 const TRAY_K = 0.42;
 const GAP = 58; // how far apart plant bases settle
 const STEP = 12; // keyboard marker step
@@ -57,7 +58,7 @@ function settle(p: Pt, others: Pt[]): Pt {
 function where(p: Pt) {
   const t = depth(p.y);
   const row = t < 0.34 ? "back" : t < 0.67 ? "middle" : "front";
-  const side = p.x < 190 ? "left" : p.x > 290 ? "right" : "centre";
+  const side = p.x < 335 ? "left" : p.x > 435 ? "right" : "centre";
   return row === "middle" && side === "centre" ? "middle" : `${row} ${side}`;
 }
 
@@ -78,7 +79,7 @@ function BedArt({ placed, live }: { placed: [Plant, Pt][]; live?: React.ReactNod
       <path d={`M${BED.backL} ${BED.backY}H${BED.backR}`} stroke="#5A4231" strokeWidth="2" />
       <rect x={BED.frontL - 4} y={BED.frontY - 2} width={BED.frontR - BED.frontL + 8} height="10" rx="2" fill="#9C7A58" />
       <rect x={BED.frontL} y={BED.frontY + 8} width={BED.frontR - BED.frontL} height="40" fill="#8A6A4C" />
-      <path d={`M${BED.frontL} ${BED.frontY + 28}H${BED.frontR}M150 ${BED.frontY + 8}v20M330 ${BED.frontY + 8}v20M240 ${BED.frontY + 28}v20`} stroke="#6E5239" strokeWidth="1.5" />
+      <path d={`M${BED.frontL} ${BED.frontY + 28}H${BED.frontR}M${BED.frontL + 110} ${BED.frontY + 8}v20M${BED.frontR - 110} ${BED.frontY + 8}v20M${(BED.frontL + BED.frontR) / 2} ${BED.frontY + 28}v20`} stroke="#6E5239" strokeWidth="1.5" />
       {[...placed]
         .sort((a, b) => a[1].y - b[1].y)
         .map(([plant, p]) => (
@@ -139,7 +140,7 @@ export function DesignBed() {
   const drop = (id: string, p: Pt) => {
     setDragPos(null);
     if (Number.isNaN(p.x)) return;
-    if (p.y > BED.backY - 24) place(id, p);
+    if (p.y > BED.backY - 24 && p.x > BED.frontL - 24) place(id, p);
     else {
       setPlaced((prev) => ({ ...prev, [id]: null }));
       setAnnounce(`${getPlant(id).commonName} is back in the tray.`);
@@ -200,14 +201,18 @@ export function DesignBed() {
       <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
           {/* sky, sun and distant shrubs, as in the original home scene */}
-          <circle cx="410" cy="64" r="30" fill="#F3E2B8" opacity="0.85" />
-          <path d="M34 84c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
-          <path d="M0 250c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 68 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
-          <rect x="0" y="340" width={W} height="40" fill="#8FA884" />
+<circle cx="490" cy="60" r="28" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 80c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 240c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 148 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="322" width={W} height="28" fill="#8FA884" />
 
           {/* the tray shelf */}
-          <rect x="22" y={SHELF_Y} width={W - 44} height="9" rx="2" fill="#9C7A58" />
-          <rect x="22" y={SHELF_Y + 9} width={W - 44} height="3" fill="#7A5A40" />
+          {SHELVES.map((y) => (
+            <g key={y}>
+              <rect x="20" y={y} width="150" height="9" rx="2" fill="#9C7A58" />
+              <rect x="20" y={y + 9} width="150" height="3" fill="#7A5A40" />
+            </g>
+          ))}
 
           <BedArt
             placed={inBed}
@@ -295,7 +300,7 @@ export function DesignBed() {
         {photo === "shown" && (
           <div className="absolute inset-0 flex items-center justify-center bg-ink/10 p-[6%]">
             <div className={`${s.polaroid} w-[78%] bg-cream p-[3%] pb-0 shadow-[0_10px_30px_rgb(28_33_27/0.3)]`} style={{ transform: "rotate(-3deg)" }}>
-              <svg viewBox={`10 ${BED.backY - 120} ${W - 20} ${BED.frontY - BED.backY + 168}`} className="block w-full bg-[#E3EBDC]" role="img" aria-label="A photo of your planted bed">
+              <svg viewBox={`${BED.frontL - 20} ${BED.backY - 100} ${BED.frontR - BED.frontL + 40} ${BED.frontY - BED.backY + 150}`} className="block w-full bg-[#E3EBDC]" role="img" aria-label="A photo of your planted bed">
                 <BedArt placed={IDS.map((id) => [getPlant(id), placed[id]!] as [Plant, Pt])} />
               </svg>
               <p className="py-[4%] text-center text-[clamp(1.5rem,4vw,2.1rem)] leading-none text-ink" style={{ fontFamily: '"Caveat Variable", cursive' }}>
