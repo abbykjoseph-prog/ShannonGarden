@@ -19,6 +19,7 @@ export const site = {
   },
   responseTime: "within two working days", // TODO confirm
   seasonNote: "I book spring visits from February. Care rounds run April to November.", // TODO confirm
+  legalUpdated: "1 November 2026", // update whenever /privacy or /terms change
 } as const;
 
 export const nav = [
