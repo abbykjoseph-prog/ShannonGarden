@@ -172,7 +172,7 @@ export function WateringCan() {
   const landY = pouring >= 0 ? PATCHES[pouring].cy : fly.pouringOn ? fly.posRef.current.y : null;
 
   return (
-    <figure className="relative">
+    <figure id="watering-can" className="relative">
       <div ref={wrapRef} className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
         <svg
           ref={svgRef}
