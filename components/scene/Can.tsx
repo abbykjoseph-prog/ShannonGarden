@@ -1,5 +1,5 @@
-import s from "./WateringCan.module.css";
-import { TILT_DEG } from "./patches";
+import s from "./scene.module.css";
+import { TILT_DEG } from "./pour";
 
 // A galvanised-style can in the brand green, drawn around its pivot (0,0). The spout points right.
 export function Can({ tilted }: { tilted: boolean }) {

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type MutableRefObject } from "react";
 import s from "./WateringCan.module.css";
-import { POUR_TIP, SCENE } from "./patches";
+import { POUR_TIP, SCENE } from "./geometry";
 
 export type FlyPhase = "flying" | "hover" | "falling" | "grounded" | "shaking" | "takeoff" | "hidden";
 
@@ -12,17 +12,18 @@ const TAKEOFF_AT = 2100;
 const DONE_AT = 3000;
 const REDUCED_AWAY_MS = 1500;
 const HIT_AFTER_MS = 220; // continuous watering before it counts as a soaking
-const REST = { x: 300, y: 132 }; // where it hovers when motion is reduced
+const REST = { x: 300, y: 168 }; // where it hovers when motion is reduced
 
-// A lazy figure-of-eight over the flowers. t in seconds.
+// A lazy figure-of-eight just above the flowers, below the can's spout. t in seconds.
 function flight(t: number) {
   return {
-    x: 280 + 165 * Math.sin(t * 0.42) + 18 * Math.sin(t * 1.7),
-    y: 150 + 34 * Math.sin(t * 0.9 + 1) + 9 * Math.sin(t * 2.3),
+    x: 300 + 150 * Math.sin(t * 0.42) + 16 * Math.sin(t * 1.7),
+    y: 175 + 20 * Math.sin(t * 0.9 + 1) + 6 * Math.sin(t * 2.3),
   };
 }
 
-const groundY = (x: number) => (x > 64 && x < 496 ? 322 : 418);
+// It lands on the bed's soil, or on the grass beyond the ends of the bed.
+const groundY = (x: number) => (x > 100 && x < 504 ? 334 : 424);
 const ease = (p: number) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
 
 type Options = {

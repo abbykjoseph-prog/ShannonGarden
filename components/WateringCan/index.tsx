@@ -1,17 +1,27 @@
 "use client";
 
-import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ButterflyArt, useButterfly } from "./Butterfly";
-import { Can } from "./Can";
-import { Droplets } from "./Droplets";
-import { PlantArt, PlantLabel } from "@/components/PlantArt";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PlantLabel } from "@/components/PlantArt";
 import { getPlant } from "@/lib/plants";
-import { CAN_BOUNDS, CAN_START, PATCHES, PATCH_RX, PATCH_RY, POUR_TIP, SCENE, SOAK_MS, cracks } from "./patches";
+import { ButterflyArt, useButterfly } from "./Butterfly";
+import { CAN_MAX_X, CAN_MIN_X, CAN_START_X, CAN_Y, GROUND, POUR_TIP, SCENE, TILT } from "./geometry";
 import s from "./WateringCan.module.css";
 
+// Five native Ontario perennials in a raised bed (restored from the original build). Hold to pour;
+// plants under the stream grow. Names come from lib/plants.ts; the drawings are this scene's own.
+const PLANTS = [
+  { id: "coneflower", x: 150, petal: "#D58AA6", centre: "#7A4A25" },
+  { id: "rudbeckia", x: 225, petal: "#E7B53B", centre: "#3A2A1A" },
+  { id: "milkweed", x: 300, petal: "#E2803A", centre: "#C4552A" },
+  { id: "monarda", x: 375, petal: "#B79BC9", centre: "#8B6AA3" },
+  { id: "aster", x: 450, petal: "#8467B3", centre: "#E6B63C" },
+];
+
+const REACH = 34;
+const GROWTH_PER_MS = 0.055;
+
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
-const fresh = () => PATCHES.map(() => 0);
+const ramp = (g: number, from: number, to: number) => clamp((g - from) / (to - from), 0, 1);
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -25,253 +35,203 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-/** Which dry patch the water would land on from this can position, if any. */
-function patchUnder(x: number, moist: number[]) {
-  const landX = x + POUR_TIP.x;
-  return PATCHES.findIndex((p, i) => moist[i] < 1 && Math.abs(p.cx - landX) < PATCH_RX * 0.8);
-}
-
 export function WateringCan() {
   const svgRef = useRef<SVGSVGElement>(null);
-  const reduced = usePrefersReducedMotion();
-
-  const [can, setCan] = useState(CAN_START);
-  const [dragging, setDragging] = useState(false);
-  const [auto, setAuto] = useState<number | null>(null); // patch being watered from a button press
-  const [moist, setMoist] = useState(fresh);
-  const [started, setStarted] = useState(false);
-  const [announce, setAnnounce] = useState("");
-  const grabOffset = useRef({ x: 0, y: 0 });
-  const moistRef = useRef(moist);
-  moistRef.current = moist;
-  const autoRef = useRef(auto);
-  autoRef.current = auto;
-  const canRef = useRef(can);
-  canRef.current = can;
-  const draggingRef = useRef(dragging);
-  draggingRef.current = dragging;
   const wrapRef = useRef<HTMLDivElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const [canX, setCanX] = useState(CAN_START_X);
+  const [pouring, setPouring] = useState(false);
+  const [growth, setGrowth] = useState<number[]>(() => PLANTS.map(() => 0));
   const [lastBloom, setLastBloom] = useState<number | null>(null);
+  const [announce, setAnnounce] = useState("");
   const [flyIn, setFlyIn] = useState(false);
+  const canXRef = useRef(canX);
+  canXRef.current = canX;
+  const growthRef = useRef(growth);
+  growthRef.current = growth;
+  const canRef = useRef({ x: canX, y: CAN_Y });
+  canRef.current = { x: canX, y: CAN_Y };
+  const pouringRef = useRef(pouring);
+  pouringRef.current = pouring;
 
-  const pouring = auto ?? (dragging ? patchUnder(can.x, moist) : -1);
-  const grown = moist.map((m) => m >= 1);
-  const allGrown = grown.every(Boolean);
-  const crackPaths = useMemo(() => PATCHES.map((_, i) => cracks(i + 3)), []);
+  const allBloomed = growth.every((g) => g >= 100);
+  const started = growth.some((g) => g > 0);
 
-  // The butterfly arrives once the last flower has opened.
+  // Grow whichever plant is under the stream while pouring.
   useEffect(() => {
-    if (!allGrown) {
-      setFlyIn(false);
-      return;
-    }
-    const t = window.setTimeout(() => setFlyIn(true), reduced ? 0 : 2200);
-    return () => window.clearTimeout(t);
-  }, [allGrown, reduced]);
-
-  const moveCan = useCallback((pos: { x: number; y: number } | "rest") => {
-    setCan(
-      pos === "rest"
-        ? CAN_START
-        : { x: clamp(pos.x, CAN_BOUNDS.minX, CAN_BOUNDS.maxX), y: clamp(pos.y, CAN_BOUNDS.minY, CAN_BOUNDS.maxY) },
-    );
-  }, []);
-
-  const fly = useButterfly({ active: flyIn, reduced, wrapRef, canRef, draggingRef, moveCan });
-
-  const finish = useCallback((i: number) => {
-    const p = getPlant(PATCHES[i].plantId);
-    setLastBloom(i);
-    setAnnounce(`The ${p.commonName.toLowerCase()} patch is soaked. ${p.commonName}, ${p.botanicalName}, is coming into flower.`);
-  }, []);
-
-  // Soak whichever patch is being poured on, about 1.5s of continuous watering.
-  useEffect(() => {
-    if (pouring < 0) return;
+    if (!pouring) return;
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
-      const dt = Math.min(50, now - last);
+      const dt = Math.min(64, now - last);
       last = now;
-      const prev = moistRef.current;
-      if (prev[pouring] < 1) {
+      const tx = canXRef.current + POUR_TIP.x;
+      const i = PLANTS.findIndex((p) => Math.abs(p.x - tx) < REACH);
+      const prev = growthRef.current;
+      if (i >= 0 && prev[i] < 100) {
         const next = [...prev];
-        next[pouring] = Math.min(1, prev[pouring] + dt / SOAK_MS);
-        moistRef.current = next;
-        setMoist(next);
-        if (next[pouring] >= 1) {
-          finish(pouring);
-          // A button-triggered watering puts the can back so it doesn't hide the new plant.
-          if (autoRef.current !== null) setCan(CAN_START);
-          setAuto(null);
-          return;
+        next[i] = Math.min(100, prev[i] + dt * GROWTH_PER_MS);
+        growthRef.current = next;
+        setGrowth(next);
+        if (next[i] >= 100) {
+          const plant = getPlant(PLANTS[i].id);
+          setLastBloom(i);
+          setAnnounce(`${plant.commonName}, ${plant.botanicalName}, is in flower.`);
         }
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [pouring, finish]);
+  }, [pouring]);
 
-  const toScene = (e: React.PointerEvent) => {
-    const svg = svgRef.current!;
-    const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM()!.inverse());
-    return { x: pt.x, y: pt.y };
-  };
-
-  const onCanDown = (e: React.PointerEvent<SVGGElement>) => {
-    if (e.button !== 0 || auto !== null) return;
-    const p = toScene(e);
-    grabOffset.current = { x: p.x - can.x, y: p.y - can.y };
-    try {
-      svgRef.current?.setPointerCapture(e.pointerId);
-    } catch {
-      // The pointer may already be gone; dragging still works while it's over the scene.
-    }
-    setDragging(true);
-    setStarted(true);
-  };
-
-  const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (!dragging) return;
-    const p = toScene(e);
-    setCan({
-      x: clamp(p.x - grabOffset.current.x, CAN_BOUNDS.minX, CAN_BOUNDS.maxX),
-      y: clamp(p.y - grabOffset.current.y, CAN_BOUNDS.minY, CAN_BOUNDS.maxY),
-    });
-  };
-
-  const onUp = () => setDragging(false);
-
-  // Keyboard and tap path: the same watering, triggered from a patch button.
-  const waterPatch = (i: number) => {
-    if (moistRef.current[i] >= 1 || dragging) return;
-    setStarted(true);
-    if (reduced) {
-      const next = [...moistRef.current];
-      next[i] = 1;
-      moistRef.current = next;
-      setMoist(next);
-      finish(i);
+  // The butterfly arrives once the last flower has opened.
+  useEffect(() => {
+    if (!allBloomed) {
+      setFlyIn(false);
       return;
     }
-    setCan({ x: PATCHES[i].cx - POUR_TIP.x, y: 150 });
-    // Let the can glide over before it starts to pour.
-    window.setTimeout(() => setAuto(i), 480);
+    const t = window.setTimeout(() => setFlyIn(true), reduced ? 0 : 900);
+    return () => window.clearTimeout(t);
+  }, [allBloomed, reduced]);
+
+  const moveCan = useCallback((pos: { x: number; y: number } | "rest") => {
+    if (pos !== "rest") setCanX(clamp(pos.x, CAN_MIN_X, CAN_MAX_X));
+  }, []);
+
+  // Pouring on the butterfly counts while the user is holding the can down.
+  const fly = useButterfly({ active: flyIn, reduced, wrapRef, canRef, draggingRef: pouringRef, moveCan });
+
+  const moveTo = useCallback((clientX: number) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const box = svg.getBoundingClientRect();
+    const x = ((clientX - box.left) / box.width) * SCENE.w;
+    // The pointer steers the spout, which is what the user is aiming.
+    setCanX(clamp(x - POUR_TIP.x, CAN_MIN_X, CAN_MAX_X));
+  }, []);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      setCanX((x) => clamp(x + (e.key === "ArrowLeft" ? -75 : 75), CAN_MIN_X, CAN_MAX_X));
+    } else if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      setPouring(true);
+    }
+  };
+  const onKeyUp = (e: React.KeyboardEvent) => {
+    if (e.key === " " || e.key === "Enter") setPouring(false);
   };
 
-  const replant = () => {
-    setMoist(fresh());
-    moistRef.current = fresh();
-    setAuto(null);
-    setCan(CAN_START);
+  const reset = () => {
+    setGrowth(PLANTS.map(() => 0));
     setLastBloom(null);
-    setAnnounce("The bed is replanted with dry soil.");
+    setAnnounce("The bed is replanted.");
   };
 
-  const tip = { x: can.x + POUR_TIP.x, y: can.y + POUR_TIP.y };
-  // Where the water lands: a dry patch, or the butterfly.
-  const landY = pouring >= 0 ? PATCHES[pouring].cy : fly.pouringOn ? fly.posRef.current.y : null;
+  const tilted = pouring || fly.pouringOn;
+  const streamEnd = fly.pouringOn ? fly.posRef.current.y - 6 : GROUND - 4;
 
   return (
-    <figure id="watering-can" className="relative">
-      <div ref={wrapRef} className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
+    <figure className="relative">
+      <div ref={wrapRef} className="relative overflow-hidden rounded-[2rem] bg-sage-soft ring-1 ring-forest/10">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${SCENE.w} ${SCENE.h}`}
-          className="block h-auto w-full select-none"
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-          onPointerCancel={onUp}
-          aria-hidden
+          className="block h-auto w-full cursor-grab select-none touch-pan-y focus:outline-none active:cursor-grabbing"
+          role="application"
+          tabIndex={0}
+          aria-label="Watering can game. Use the left and right arrow keys to move the can over a plant, then hold Space or Enter to water it."
+          onPointerMove={(e) => moveTo(e.clientX)}
+          onPointerDown={(e) => {
+            moveTo(e.clientX);
+            try {
+              (e.target as Element).setPointerCapture?.(e.pointerId);
+            } catch {
+              // The pointer may already be gone; pouring still works while it's held over the scene.
+            }
+            setPouring(true);
+          }}
+          onPointerUp={() => setPouring(false)}
+          onPointerCancel={() => setPouring(false)}
+          onPointerLeave={(e) => e.pointerType === "mouse" && setPouring(false)}
+          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
+          onBlur={() => setPouring(false)}
         >
-          <defs>
-            {PATCHES.map((p, i) => (
-              <clipPath key={i} id={`patch-${i}`}>
-                <ellipse cx={p.cx} cy={p.cy} rx={PATCH_RX} ry={PATCH_RY} />
-              </clipPath>
-            ))}
-          </defs>
+          {/* sky details */}
+          <circle cx="470" cy="70" r="34" fill="#F3E2B8" opacity="0.85" />
+          <path d="M40 92c14-10 30-10 42 0 10-7 26-7 34 3H40Z" fill="#F6F1E6" opacity="0.8" />
 
-          {/* city fence boards behind the bed */}
-          {Array.from({ length: 14 }, (_, i) => (
-            <rect key={i} x={i * 40 + 2} y={48 + (i % 3) * 3} width="37" height="300" fill={i % 2 ? "#D3DBC8" : "#D7DFCC"} />
+          {/* far shrubs */}
+          <path d="M0 300c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 128 4v60H0Z" fill="#A9BF9F" opacity="0.55" />
+
+          {/* raised bed */}
+          <rect x="96" y={GROUND - 4} width="412" height="18" rx="6" fill="#3A2A1D" />
+          <rect x="88" y={GROUND + 12} width="428" height="64" rx="6" fill="#6B4A33" />
+          <path d={`M88 ${GROUND + 30}h428M88 ${GROUND + 52}h428`} stroke="#5A3D29" strokeWidth="2" />
+          <rect x="0" y="420" width="540" height="20" fill="#8FA884" />
+
+          {/* damp soil where it's been watered */}
+          {PLANTS.map((p, i) => (
+            <ellipse key={`damp-${p.x}`} cx={p.x} cy={GROUND + 3} rx="30" ry="6" fill="#241912" opacity={Math.min(0.75, growth[i] / 60)} />
           ))}
-          <rect x="0" y="120" width="560" height="5" fill="#C9D2BD" />
-          <rect x="0" y="250" width="560" height="5" fill="#C9D2BD" />
 
-          {/* ground and shadow */}
-          <rect x="0" y="392" width="560" height="48" fill="#8FA884" />
-          <ellipse cx="280" cy="410" rx="260" ry="10" fill="#1C211B" opacity="0.12" />
+          {/* plants */}
+          {PLANTS.map((p, i) => (
+            <Plant key={p.id} x={p.x} g={growth[i]} petal={p.petal} centre={p.centre} />
+          ))}
 
-          {/* raised bed: soil surface in perspective, timber front */}
-          <path d="M70 282H490L522 338H38Z" fill="#6B4F3A" />
-          <path d="M70 282H490" stroke="#5A4231" strokeWidth="2" />
-          <rect x="34" y="336" width="492" height="10" rx="2" fill="#9C7A58" />
-          <rect x="38" y="346" width="484" height="58" fill="#8A6A4C" />
-          <path d="M38 365H522M38 385H522M150 346v19M330 346v19M240 365v20M440 365v20M110 385v19M390 385v19" stroke="#6E5239" strokeWidth="1.5" />
-
-          {/* the three dry patches, darkening as they soak */}
-          {PATCHES.map((p, i) => (
-            <g key={p.plantId}>
-              <ellipse cx={p.cx} cy={p.cy} rx={PATCH_RX} ry={PATCH_RY} fill="#B39A7E" />
-              <g clipPath={`url(#patch-${i})`} opacity={1 - moist[i]}>
-                <g transform={`translate(${p.cx} ${p.cy})`} stroke="#7E644C" strokeWidth="1.2" fill="none" strokeLinejoin="round">
-                  {crackPaths[i].map((d, k) => (
-                    <path key={k} d={d} />
-                  ))}
-                </g>
-              </g>
-              <ellipse cx={p.cx} cy={p.cy} rx={PATCH_RX} ry={PATCH_RY} fill="#3E2C20" opacity={moist[i] * 0.95} />
-              {moist[i] > 0.85 && <ellipse cx={p.cx - 12} cy={p.cy - 4} rx="14" ry="3" fill="#FFFFFF" opacity={(moist[i] - 0.85) * 1.2} />}
+          {/* water stream */}
+          {tilted && (
+            <g aria-hidden>
+              {[0, 1, 2, 3, 4].map((k) => (
+                <line
+                  key={k}
+                  x1={canX + POUR_TIP.x - 6 + k * 3}
+                  y1={CAN_Y + POUR_TIP.y + 4}
+                  x2={canX + POUR_TIP.x - 10 + k * 5}
+                  y2={streamEnd}
+                  stroke="#7FB2D0"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray="6 14"
+                  className={s.stream}
+                  style={{ animationDelay: `${k * -0.09}s` }}
+                  opacity={0.85}
+                />
+              ))}
+              <ellipse cx={canX + POUR_TIP.x - 2} cy={streamEnd + 2} rx="18" ry="4" fill="#7FB2D0" opacity="0.35" />
             </g>
-          ))}
+          )}
 
-          {/* plants grow once a patch is soaked */}
-          {PATCHES.map((p, i) => grown[i] && <PlantArt key={p.plantId} plant={getPlant(p.plantId)} x={p.cx} y={p.cy - 2} />)}
-
-          {/* water */}
-          {landY !== null && !reduced && <Droplets x={tip.x} y={tip.y} landY={landY} ripple={pouring >= 0} />}
-
+          {/* butterfly, once everything is in flower */}
           {flyIn && fly.phase !== "hidden" && (
             <g ref={fly.gRef}>
               <ButterflyArt phase={fly.phase} />
             </g>
           )}
 
-          {/* the can */}
-          <g
-            className={dragging ? "" : s.canMoving}
-            style={{ transform: `translate(${can.x}px, ${can.y}px)` }}
-          >
+          {/* watering can */}
+          <g transform={`translate(${canX} ${CAN_Y})`} style={{ transition: "transform 120ms ease-out" }}>
             <g
-              onPointerDown={onCanDown}
-              style={{ cursor: dragging ? "grabbing" : "grab", touchAction: "none" }}
+              style={{
+                transform: `rotate(${tilted ? TILT : 0}deg)`,
+                transformBox: "view-box",
+                transformOrigin: "0 0",
+                transition: reduced ? "none" : "transform 260ms cubic-bezier(.3,.7,.3,1)",
+              }}
             >
-              <Can tilted={pouring >= 0 || fly.pouringOn} />
-              {/* generous invisible grab area for fingers */}
-              <circle r="72" cx="20" cy="-10" fill="transparent" />
+              <path d="M-36-30C-36-78 26-78 26-30" fill="none" stroke="#8E4A2A" strokeWidth="8" strokeLinecap="round" />
+              <path d="M33 2 88-38l7 9-62 49Z" fill="#B5643C" />
+              <rect x="84" y="-46" width="16" height="20" rx="4" transform="rotate(-36 92 -36)" fill="#8E4A2A" />
+              <path d="M-46-34h80l4 70h-88Z" fill="#B5643C" />
+              <path d="M-46-34h80l1 12h-82Z" fill="#8E4A2A" />
+              <path d="M-38-14v44" stroke="#D88A5E" strokeWidth="5" strokeLinecap="round" opacity="0.7" />
             </g>
           </g>
         </svg>
-
-        {/* Each patch is also a button: the keyboard and tap path to the same growth. */}
-        {PATCHES.map((p, i) => (
-          <button
-            key={p.plantId}
-            type="button"
-            onClick={() => waterPatch(i)}
-            aria-disabled={grown[i]}
-            aria-label={grown[i] ? `${getPlant(p.plantId).commonName} is in flower` : `Water the ${getPlant(p.plantId).commonName.toLowerCase()} patch`}
-            className="absolute rounded-[50%] focus-visible:outline-offset-0"
-            style={{
-              left: `${((p.cx - PATCH_RX) / SCENE.w) * 100}%`,
-              top: `${((p.cy - PATCH_RY - 6) / SCENE.h) * 100}%`,
-              width: `${((PATCH_RX * 2) / SCENE.w) * 100}%`,
-              height: `${((PATCH_RY * 2 + 12) / SCENE.h) * 100}%`,
-            }}
-          />
-        ))}
 
         {flyIn && (
           <button
@@ -288,17 +248,17 @@ export function WateringCan() {
           style={{ opacity: fly.oops ? 1 : 0 }}
           aria-hidden
         >
-          <span className="inline-block rounded-full bg-cream px-3 py-1 text-[0.88rem] font-semibold sm:text-[0.95rem]">
+          <span className="inline-block rounded-full bg-cream px-3 py-1 text-[0.88rem] font-semibold text-forest-deep sm:text-[0.95rem]">
             Oops! Easy there, we need our pollinators.
           </span>
         </p>
 
         <p
-          className={`${s.hint} pointer-events-none absolute left-4 top-4 rounded-full bg-cream/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-ink`}
+          className={`${s.hint} pointer-events-none absolute left-5 top-5 rounded-full bg-cream/90 px-3.5 py-1.5 text-xs font-semibold text-forest-deep shadow-sm`}
           style={{ opacity: started ? 0 : 1 }}
           aria-hidden={started}
         >
-          Drag the can over the dry soil
+          <span aria-hidden>↔ </span>Move, then press and hold to water
         </p>
       </div>
 
@@ -306,29 +266,22 @@ export function WateringCan() {
         {/* Fixed height, sized for the longest name wrapping to two lines, so Replant never moves. */}
         <div className="h-[7.25rem]">
           {lastBloom !== null ? (
-            <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-cream px-4 py-2.5 ring-1 ring-ink/10`}>
-              <PlantLabel plant={getPlant(PATCHES[lastBloom].plantId)} />
+            <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-cream-warm px-4 py-2.5 ring-1 ring-forest/10`}>
+              <PlantLabel plant={getPlant(PLANTS[lastBloom].id)} />
             </div>
           ) : (
-            <p className="pt-2.5 text-ink/70">Three native Ontario perennials, waiting for water.</p>
+            <p className="pt-2.5 text-ink/70">Five native perennials, just planted.</p>
           )}
         </div>
         <button
           type="button"
-          onClick={replant}
-          className={`link text-[0.98rem] text-ink/80 ${moist.some((m) => m > 0) ? "" : "invisible"}`}
+          onClick={reset}
+          className={`text-[0.98rem] font-semibold text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest ${started ? "" : "invisible"}`}
         >
           Replant the bed
         </button>
-        <p className="mt-3 min-h-[1.7em] text-[0.98rem]">
-          {allGrown && (
-            <span className={s.done}>
-              That&apos;s the job, more or less.{" "}
-              <Link href="/contact" className="link font-semibold">
-                Want me to do yours?
-              </Link>
-            </span>
-          )}
+        <p className="mt-3 min-h-[1.7em] text-[0.98rem] text-ink/70">
+          {allBloomed && <span className={s.done}>That&apos;s the job: steady care, done properly.</span>}
         </p>
       </figcaption>
       <p className="sr-only" aria-live="polite">
@@ -338,5 +291,55 @@ export function WateringCan() {
         {fly.announce}
       </p>
     </figure>
+  );
+}
+
+function Plant({ x, g, petal, centre }: { x: number; g: number; petal: string; centre: string }) {
+  const stem = ramp(g, 5, 70) * 120;
+  const leaves = ramp(g, 22, 60);
+  const bud = ramp(g, 62, 85);
+  const bloom = ramp(g, 85, 100);
+  const top = GROUND - stem;
+
+  return (
+    <g aria-hidden>
+      {/* seed mound */}
+      <ellipse cx={x} cy={GROUND - 1} rx="9" ry="3.5" fill="#4A3424" />
+      {stem > 0 && (
+        <path
+          d={`M${x} ${GROUND}C${x - 4} ${GROUND - stem * 0.4} ${x + 4} ${GROUND - stem * 0.7} ${x} ${top}`}
+          stroke="#4E7246"
+          strokeWidth="3.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      )}
+      {leaves > 0 && (
+        <>
+          <Leaf x={x} y={GROUND - stem * 0.32} s={leaves} dir={-1} />
+          <Leaf x={x} y={GROUND - stem * 0.52} s={leaves * 0.85} dir={1} />
+          {g > 45 && <Leaf x={x} y={GROUND - stem * 0.72} s={leaves * 0.6} dir={-1} />}
+        </>
+      )}
+      {bud > 0 && bloom === 0 && <ellipse cx={x} cy={top - 4 * bud} rx={5 * bud} ry={7 * bud} fill="#5E7F59" />}
+      {bloom > 0 && (
+        <g transform={`translate(${x} ${top - 4}) scale(${0.3 + bloom * 0.7})`}>
+          {Array.from({ length: 10 }, (_, k) => (
+            <ellipse key={k} cx="0" cy="-13" rx="4.6" ry="11" fill={petal} transform={`rotate(${k * 36})`} />
+          ))}
+          <circle r="7.5" fill={centre} />
+        </g>
+      )}
+    </g>
+  );
+}
+
+function Leaf({ x, y, s, dir }: { x: number; y: number; s: number; dir: 1 | -1 }) {
+  return (
+    <path
+      d="M0 0C6-12 22-16 34-12 26 0 12 6 0 0Z"
+      fill="#5E7F59"
+      transform={`translate(${x} ${y}) scale(${dir * s} ${s}) rotate(-12)`}
+    />
   );
 }

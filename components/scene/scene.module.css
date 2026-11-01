@@ -1,0 +1,36 @@
+.tilt {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 240ms cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.drop {
+  animation: fall 560ms cubic-bezier(0.5, 0, 1, 1) infinite;
+  animation-delay: var(--d, 0ms);
+}
+
+.ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ripple 700ms ease-out infinite;
+}
+
+@keyframes fall {
+  from { transform: translateY(0); opacity: 0.95; }
+  to { transform: translateY(var(--fall)); opacity: 0.6; }
+}
+
+@keyframes ripple {
+  from { transform: scale(0.4); opacity: 0.7; }
+  to { transform: scale(1.4); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop,
+  .ripple {
+    display: none;
+  }
+  .tilt {
+    transition: none;
+  }
+}

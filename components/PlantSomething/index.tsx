@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PlantArt, PlantLabel } from "@/components/PlantArt";
 import { useSvgDrag } from "@/components/scene/useSvgDrag";
-import { Can } from "@/components/WateringCan/Can";
-import { Droplets } from "@/components/WateringCan/Droplets";
-import { POUR_TIP, SOAK_MS } from "@/components/WateringCan/patches";
+import { Can } from "@/components/scene/Can";
+import { Droplets } from "@/components/scene/Droplets";
+import { POUR_TIP, SOAK_MS } from "@/components/scene/pour";
 import { plants, type Plant } from "@/lib/plants";
 import s from "./PlantSomething.module.css";
 

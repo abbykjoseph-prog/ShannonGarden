@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import s from "./WateringCan.module.css";
+import s from "./scene.module.css";
 
 /** Water falling from the can's rose at (x, y) down to landY, with a ripple where it lands. */
 export function Droplets({ x, y, landY, ripple = true }: { x: number; y: number; landY: number; ripple?: boolean }) {
