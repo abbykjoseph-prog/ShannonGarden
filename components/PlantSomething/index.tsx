@@ -20,12 +20,12 @@ const PILE = { x: 354, y: 258 };
 const SHOVEL_REST = { x: 505, y: 214 };
 const TRAY = { x: 64, y: 328 };
 const CAN_REST = { x: 430, y: 92 };
-const DIGS = 3;
+const DIGS = 1; // one push of the shovel digs the whole hole
 const CAN_K = 0.78; // the can is drawn for the larger home scene
-const HOLE_SCALE = [0, 0.55, 0.8, 1];
+const HOLE_SCALE = [0, 1];
 
 const STEPS: { phase: Phase; label: string; hint: string; action: string }[] = [
-  { phase: "dig", label: "Dig", hint: "Drag the shovel into the soil", action: "Dig" },
+  { phase: "dig", label: "Dig", hint: "Drag the shovel into the soil to dig", action: "Dig" },
   { phase: "plant", label: "Plant", hint: "Drop the seed in the hole", action: "Plant the seed" },
   { phase: "water", label: "Water", hint: "Water it in", action: "Water" },
 ];
