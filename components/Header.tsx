@@ -17,6 +17,8 @@ const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const BIG_W = 544; // the opening logo's width (34rem)
 const BIG_H = (BIG_W * 457) / 1800;
 const BIG_TOP = 30;
+const BANNER_H = 200; // matches the 12.5rem spacer below the header
+const BAR_H = 80;
 
 type Flip = { fromX: number; toX: number; toY: number; scale: number };
 
@@ -142,12 +144,21 @@ export function Header() {
         pointerEvents: docked ? "auto" : "none",
       }
     : undefined;
+  // The cream banner behind the big logo shrinks (scaleY, from the top) into the bar's background.
+  const bannerStyle: CSSProperties = {
+    transform: docked && !reduced ? `scaleY(${BAR_H / BANNER_H})` : "none",
+    opacity: docked && reduced ? 0 : 1,
+    transition: reduced ? t("opacity", 200) : t("transform", 650),
+  };
   const slotStyle: CSSProperties | undefined = desktop
     ? { opacity: docked ? 1 : 0, transition: docked ? fade(280, 420) : fade(220, 0) }
     : undefined;
 
   return (
     <>
+      {/* Desktop cream banner behind the opening logo, with a quiet brand-green rule along its bottom edge. */}
+      <div aria-hidden className="fixed inset-x-0 top-0 z-20 hidden origin-top border-b border-forest/15 bg-cream-warm lg:block" style={{ height: BANNER_H, ...bannerStyle }} />
+
       {/* Desktop opening logo. Mouse-only link; the bar's monogram is the keyboard route home. */}
       <Link
         href="/"
@@ -161,7 +172,7 @@ export function Header() {
 
       <header
         ref={headerRef}
-        className="sticky top-0 z-40 border-b border-ink/10 bg-cream/95 backdrop-blur-sm lg:fixed lg:inset-x-0"
+        className="sticky top-0 z-40 border-b border-forest/15 bg-cream-warm/95 backdrop-blur-sm lg:fixed lg:inset-x-0 lg:bg-cream-warm/90"
         style={barStyle}
       >
         <div className="wrap flex h-[4.25rem] items-center justify-between gap-4 sm:h-20">
