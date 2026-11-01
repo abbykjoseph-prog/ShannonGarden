@@ -48,7 +48,11 @@ export function PlanSlider({ id, title, plan, photos }: Props) {
         className="relative aspect-[400/260] touch-pan-y select-none overflow-hidden rounded-[1.25rem] bg-paper ring-1 ring-loam/15"
         onPointerDown={(e) => {
           if (e.button !== 0) return;
-          e.currentTarget.setPointerCapture(e.pointerId);
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            // Pointer already released; a plain click still moves the handle.
+          }
           setDragging(true);
           fromPointer(e.clientX);
         }}
@@ -95,7 +99,7 @@ export function PlanSlider({ id, title, plan, photos }: Props) {
               </dt>
               <dd>
                 <span className="latin text-[1.08rem]">{k.latin}</span>{" "}
-                <span className="text-loam/65">{k.common.toLowerCase()}</span>
+                <span className="text-loam/65">{k.common}</span>
               </dd>
             </div>
           ))}

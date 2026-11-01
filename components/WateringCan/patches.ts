@@ -32,7 +32,7 @@ export const POUR_TIP = {
 };
 
 export const CAN_BOUNDS = { minX: 50, maxX: 462, minY: 72, maxY: 236 };
-export const CAN_START = { x: 446, y: 118 };
+export const CAN_START = { x: 446, y: 86 };
 
 /** Deterministic jagged crack lines inside a patch, so server and client draw the same thing. */
 export function cracks(seed: number) {

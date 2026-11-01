@@ -41,6 +41,8 @@ export function WateringCan() {
   const grabOffset = useRef({ x: 0, y: 0 });
   const moistRef = useRef(moist);
   moistRef.current = moist;
+  const autoRef = useRef(auto);
+  autoRef.current = auto;
 
   const pouring = auto ?? (dragging ? patchUnder(can.x, moist) : -1);
   const grown = moist.map((m) => m >= 1);
@@ -68,6 +70,8 @@ export function WateringCan() {
         setMoist(next);
         if (next[pouring] >= 1) {
           finish(pouring);
+          // A button-triggered watering puts the can back so it doesn't hide the new plant.
+          if (autoRef.current !== null) setCan(CAN_START);
           setAuto(null);
           return;
         }
@@ -88,7 +92,11 @@ export function WateringCan() {
     if (e.button !== 0 || auto !== null) return;
     const p = toScene(e);
     grabOffset.current = { x: p.x - can.x, y: p.y - can.y };
-    svgRef.current?.setPointerCapture(e.pointerId);
+    try {
+      svgRef.current?.setPointerCapture(e.pointerId);
+    } catch {
+      // The pointer may already be gone; dragging still works while it's over the scene.
+    }
     setDragging(true);
     setStarted(true);
   };
