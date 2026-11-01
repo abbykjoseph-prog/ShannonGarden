@@ -13,7 +13,9 @@ npm run build
 
 Nearly all copy and business facts live in **`lib/site.ts`**:
 
-- `site`: name, phone, email, `yearsProfessional`, `education`, response time, the "last updated" date for the legal pages
+- `site`: `businessName` (matches the logo), `ownerName` (Shannon K Boudreau, used wherever the person is named),
+  phone, email, `yearsProfessional`, `education`, response time, the "last updated" date for the legal pages.
+  The phone and email are deliberately shown in only two places: the footer and the contact page.
 - `gtaRegions`: the service area (also drives the footer and the postal code checker on /contact)
 - `approach`, `services`, `principles`, `contactSteps`: page copy
 - `projects`: the Work page. Each has a `plan` that the before/after drawings are generated from.
@@ -21,6 +23,11 @@ Nearly all copy and business facts live in **`lib/site.ts`**:
   and put the files in `public/work/`.
 - `testimonials`: the plant-tag quotes, each tied to a project by `project`
 - `monthlyTasks`: the "This month in a Toronto garden" calendar (zone 5b to 6a), one entry per month
+
+Plants live in **`lib/plants.ts`**, the single source for all three interactions (the watering can on the home page,
+"Plant something" on /about and "Design a bed" on /contact). Each has its names, a short description, light, bloom
+season, whether it's native to Ontario, and a drawing in `components/PlantArt/art.tsx` built from shared stem, leaf
+and bloom parts so it can grow. To add a plant, add a drawing there and an entry in `plants`.
 
 Search the code for `TODO` and `PLACEHOLDER` to find everything that still needs confirming.
 
@@ -54,7 +61,7 @@ analytics, a map or video embed later, update the privacy note, `/privacy`, and 
 
 - [ ] **Second degree field**: `site.education.secondField` in `lib/site.ts` (currently "TODO confirm")
 - [ ] **Years of professional experience**: `site.yearsProfessional` ("3+" or "3-4")
-- [ ] **Phone and email**: `site.phone`, `site.phoneHref`, `site.email`
+- [ ] **Email**: `site.email` is still `hello@example.com` (the phone, (647) 545-9112, is set)
 - [ ] **Domain**: `site.url`
 - [ ] **Response time and season note**: `site.responseTime`, `site.seasonNote`
 - [ ] **Service area**: `gtaRegions` (and the postal code rules in `lib/postal.ts` if it changes)
