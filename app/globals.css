@@ -67,3 +67,9 @@
     @apply btn border border-loam/25 text-loam hover:border-loam/60 hover:bg-loam/[0.04];
   }
 }
+
+/* Feedback motion for form states. */
+@keyframes settle {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
