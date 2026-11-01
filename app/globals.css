@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-cream text-ink antialiased;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply font-sans text-[1.0625rem] leading-relaxed;
+  }
+  h1, h2, h3 {
+    @apply font-display text-forest-deep;
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    @apply bg-sage text-forest-night;
+  }
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-clay;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-page px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-forest;
+  }
+  .latin {
+    @apply font-display italic;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition-colors;
+  }
+  .btn-primary {
+    @apply btn bg-forest text-cream hover:bg-forest-deep;
+  }
+  .btn-ghost {
+    @apply btn border border-forest/40 text-forest-deep hover:border-forest hover:bg-forest/5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes pour {
+  to { stroke-dashoffset: -20; }
+}
+
+@keyframes flutter {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-90px, -30px); }
+  50% { transform: translate(40px, -60px); }
+  75% { transform: translate(110px, -10px); }
+}
