@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { nav, site } from "@/lib/site";
 
 /*
@@ -20,6 +20,10 @@ const BIG_H = (BIG_W * 457) / 1800;
 const BIG_TOP = 30;
 const BANNER_H = 200; // matches the 12.5rem spacer below the header
 const BAR_H = 80;
+const GAP = BANNER_H - BAR_H; // the space the banner reserved, closed up once the bar docks
+
+// useLayoutEffect on the client (so the gap closes before paint), a plain effect during the server render.
+const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 // Set once the opening has played (or been skipped) in this visit. Module scope survives client-side
 // navigation but resets on a full page load, which is exactly when the big logo should show again.
@@ -45,9 +49,12 @@ const t = (prop: string, ms: number, delay = 0) => `${prop} ${ms}ms ${EASE} ${de
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  // `intro`: the big logo is showing. `introPage`: this page view began with it (keeps its space reserved).
+  // `intro`: the big logo is showing. `introPage`: this page view began with it (its banner and logo stay
+  // mounted to play their exit). `reserve`: the banner's space is still held open above the page.
   const [intro, setIntro] = useState(() => pathname === "/" && !introDone);
   const [introPage, setIntroPage] = useState(intro);
+  const [reserve, setReserve] = useState(intro);
+  const closeFrom = useRef<number | null>(null);
   const [flip, setFlip] = useState<Flip | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -59,16 +66,46 @@ export function Header() {
 
   const docked = !intro;
 
+  // Ends the opening: the bar docks and the banner's reserved space closes up.
+  const dock = () => {
+    introDone = true;
+    closeFrom.current = window.scrollY;
+    setIntro(false);
+    setReserve(false);
+  };
+
+  // Closing the gap without a jump: scroll up by the same amount, so nothing moves on screen. If the page
+  // isn't scrolled far enough to absorb it all, the rest is a short transform slide in step with the banner.
+  useIsoLayoutEffect(() => {
+    const y = closeFrom.current;
+    if (reserve || y === null) return;
+    closeFrom.current = null;
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    const target = Math.max(0, y - GAP);
+    window.scrollTo(0, target);
+    const shift = GAP - (y - target);
+    if (shift <= 0 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const els = [document.querySelector("main"), document.querySelector("footer")].filter(Boolean) as HTMLElement[];
+    els.forEach((el) => {
+      el.style.transition = "none";
+      el.style.transform = `translateY(${shift}px)`;
+    });
+    void els[0]?.offsetHeight; // commit the starting position before animating from it
+    els.forEach((el) => {
+      el.style.transition = t("transform", 650);
+      el.style.transform = "";
+    });
+    const done = window.setTimeout(() => els.forEach((el) => (el.style.transition = "")), 700);
+    return () => window.clearTimeout(done);
+  }, [reserve]);
+
   // One way only: the first scroll past 40px ends the opening for this visit.
   useEffect(() => {
     if (!intro) return;
     let raf = 0;
     const check = () => {
       raf = 0;
-      if (window.scrollY > DOCK_AT) {
-        introDone = true;
-        setIntro(false);
-      }
+      if (window.scrollY > DOCK_AT) dock();
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(check);
@@ -87,6 +124,7 @@ export function Header() {
     introDone = true;
     setIntro(false);
     setIntroPage(false);
+    setReserve(false);
   }, [pathname]);
 
   // Measure where the big logo starts (centred) and where it lands (the monogram's slot in the bar).
@@ -113,10 +151,7 @@ export function Header() {
   useEffect(() => {
     if (!intro) return;
     const onFocusIn = (e: FocusEvent) => {
-      if (headerRef.current?.contains(e.target as Node | null)) {
-        introDone = true;
-        setIntro(false);
-      }
+      if (headerRef.current?.contains(e.target as Node | null)) dock();
     };
     document.addEventListener("focusin", onFocusIn);
     return () => document.removeEventListener("focusin", onFocusIn);
@@ -277,8 +312,8 @@ export function Header() {
         </div>
       </header>
 
-      {/* Reserves the bar's space on desktop (the banner's, on a page that opened with the big logo, so nothing shifts). */}
-      <div aria-hidden className={`hidden lg:block ${introPage ? "h-[12.5rem]" : "h-20"}`} />
+      {/* Reserves the bar's space on desktop (the banner's while the home opening is showing). */}
+      <div aria-hidden className={`hidden lg:block ${reserve ? "h-[12.5rem]" : "h-20"}`} />
     </>
   );
 }
