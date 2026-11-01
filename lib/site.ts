@@ -11,8 +11,12 @@ export const site = {
   phone: "(416) 555-0142", // TODO confirm
   phoneHref: "tel:+14165550142", // TODO confirm
   email: "hello@example.com", // TODO confirm
-  yearsExperience: 15, // TODO confirm
-  education: "Diploma in Horticulture, [School name]", // TODO confirm school and credential
+  // Paid garden work only. Keep it modest: "3+" or "3-4". Don't use bigger numbers anywhere.
+  yearsProfessional: "3+", // TODO confirm "3+" or "3-4"
+  education: {
+    firstField: "International Development",
+    secondField: "TODO confirm", // TODO confirm the second field of the double degree
+  },
   responseTime: "within two working days", // TODO confirm
   seasonNote: "I book spring visits from February. Care rounds run April to November.", // TODO confirm
 } as const;

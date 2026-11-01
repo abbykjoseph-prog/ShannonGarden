@@ -7,7 +7,7 @@ import { approach, services, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: { absolute: `${site.name} | Garden design and care in Toronto and the GTA` },
-  description: `Garden design and care in Toronto and the GTA from ${site.person}, a trained horticulturist. Planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
+  description: `Garden design and care in Toronto and the GTA from ${site.person}, who has been growing things her whole life. Planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
 };
 
 // Re-render daily so the server-rendered month is current before the visitor's own clock takes over.
@@ -22,8 +22,8 @@ export default function Home() {
             City gardens, <em className="text-green">grown properly.</em>
           </h1>
           <p className="mt-7 max-w-[42ch] text-[1.15rem] text-loam/80">
-            I&apos;m {site.person}, a trained horticulturist who designs, plants and tends gardens across the Greater
-            Toronto Area. One gardener, start to finish.
+            I&apos;m {site.person}. I&apos;ve been growing things my whole life, and for the last few years I&apos;ve been
+            doing it for clients across the Greater Toronto Area. One gardener, start to finish.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/contact" className="btn-primary">Book a garden visit</Link>
@@ -44,8 +44,8 @@ export default function Home() {
             <h2 id="how" className="text-[2.4rem] leading-[1.05] sm:text-5xl">Horticulture is a craft. City gardens deserve it.</h2>
             <p className="mt-5 max-w-prose text-loam/75">
               Most city gardens are planted in a day and left to fend for themselves. I&apos;d rather do it slowly and
-              properly, with a formal training in horticulture and {site.yearsExperience} years of Toronto soil under my
-              fingernails.
+              properly, the way I&apos;ve looked after plants since I was small, and the way I&apos;ve worked in Toronto
+              gardens for the past {site.yearsProfessional} years.
             </p>
           </div>
           <ol className="grid gap-x-10 gap-y-10 sm:grid-cols-2 md:col-span-7 md:pt-2">

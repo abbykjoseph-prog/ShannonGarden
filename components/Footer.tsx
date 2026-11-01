@@ -9,7 +9,7 @@ export function Footer() {
         <div className="md:col-span-5">
           <Image src="/logo-long-light.png" alt={site.name} width={1800} height={457} className="h-14 w-auto sm:h-16" />
           <p className="mt-6 max-w-[36ch] text-limestone/80">
-            Garden design and care in Toronto and the GTA. One trained horticulturist, from the first visit to the last
+            Garden design and care in Toronto and the GTA. One gardener, from the first visit to the last
             clean-up of the season.
           </p>
         </div>

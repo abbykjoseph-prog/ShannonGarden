@@ -6,8 +6,10 @@ import { principles, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Shannon",
-  description: `Meet ${site.person}, a trained horticulturist with ${site.yearsExperience} years of experience offering garden design and care in Toronto and the GTA.`,
+  description: `Meet ${site.person}: a lifetime of growing things and ${site.yearsProfessional} years of garden work for clients, offering garden design and care in Toronto and the GTA.`,
 };
+
+const degree = `a double degree in ${site.education.firstField} and ${site.education.secondField}`;
 
 export default function About() {
   return (
@@ -30,23 +32,23 @@ export default function About() {
             </div>
           </div>
           <figcaption className="mt-3 text-[0.95rem] text-loam/65">
-            {site.education}. {site.yearsExperience} years in Toronto gardens.
+            Growing things since childhood. {site.yearsProfessional} years gardening for clients in the GTA.
           </figcaption>
         </figure>
 
         <div className="space-y-14 md:col-span-7">
           <div>
-            <h2 className="text-[2.1rem] leading-[1.1] sm:text-[2.6rem]">Trained in the science, grown in the soil</h2>
+            <h2 className="text-[2.1rem] leading-[1.1] sm:text-[2.6rem]">A lifetime of growing things</h2>
             <div className="mt-4 max-w-prose space-y-4 text-loam/80">
               <p>
-                I studied horticulture formally ({site.education}): plant science, soils, propagation, pests and
-                diseases, and design. That training is behind everything I do. When I recommend a plant or a pruning cut,
-                there&apos;s a reason for it, and I&apos;m happy to explain it.
+                I&apos;ve been growing and looking after plants for as long as I can remember: seeds on windowsills,
+                vegetable beds, cuttings passed between neighbours, houseplants rescued from the curb. Most of what I know
+                I learned by watching plants closely, year after year, and noticing what they needed.
               </p>
               <p>
-                I&apos;ve spent {site.yearsExperience} years since then putting it into practice in real Toronto gardens.
-                Heavy clay, dry shade under old maples, boulevards burned by road salt, balconies twenty storeys up. Each
-                one taught me something the textbooks didn&apos;t.
+                For the last {site.yearsProfessional} years I&apos;ve been doing it for clients across the GTA. Heavy clay,
+                dry shade under old maples, boulevards burned by road salt, windy balconies high up. Each garden teaches
+                me something, and when I suggest a plant or a pruning cut I&apos;ll always tell you why.
               </p>
             </div>
           </div>
@@ -54,6 +56,10 @@ export default function About() {
           <div>
             <h2 className="text-[2.1rem] leading-[1.1] sm:text-[2.6rem]">Why city gardens</h2>
             <div className="mt-4 max-w-prose space-y-4 text-loam/80">
+              <p>
+                I hold {degree}, and it shapes how I think about gardens. They&apos;re one of the most direct ways a
+                neighbourhood can look after itself: shade, food, habitat, and somewhere for people to stop and talk.
+              </p>
               <p>
                 Most of us live in the city, and it&apos;s where nature most needs a foothold. A well-planted front yard
                 cools the sidewalk, soaks up rain, feeds bees and birds, and makes a street feel looked after. A balcony

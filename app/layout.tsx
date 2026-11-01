@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: `${site.name} | Garden design and care in Toronto and the GTA`,
     template: `%s | ${site.name}`,
   },
-  description: `${site.person} is a trained horticulturist offering garden design and care in Toronto and the GTA: planting, seasonal care, balconies and native pollinator gardens.`,
+  description: `${site.person} offers garden design and care in Toronto and the GTA: planting, seasonal care, balconies and native pollinator gardens. One gardener, start to finish.`,
   icons: { icon: "/favicon.svg" },
   openGraph: { siteName: site.name, locale: "en_CA", type: "website" },
 };
@@ -31,7 +31,7 @@ const jsonLd = {
   image: `${site.url}/opengraph-image.png`,
   address: { "@type": "PostalAddress", addressLocality: "Toronto", addressRegion: "ON", addressCountry: "CA" },
   areaServed: gtaRegions.map((r) => ({ "@type": "AdministrativeArea", name: r.name })),
-  description: `Garden design and care in Toronto and the GTA by trained horticulturist ${site.person}.`,
+  description: `Garden design and care in Toronto and the GTA by ${site.person}. One gardener, start to finish.`,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
