@@ -197,7 +197,7 @@ export function ServiceberryArt() {
         ].map(([x, y], i) => (
           <g key={i} transform={`translate(${x} ${y})`}>
             {[0, 72, 144, 216, 288].map((a) => (
-              <ellipse key={a} cx="0" cy="-2.6" rx="1.6" ry="2.6" transform={`rotate(${a})`} fill="#FBFBF7" />
+              <ellipse key={a} cx="0" cy="-2.6" rx="1.6" ry="2.6" transform={`rotate(${a})`} fill="#F6F1E6" />
             ))}
           </g>
         ))}

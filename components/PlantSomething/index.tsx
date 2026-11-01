@@ -216,10 +216,10 @@ export function PlantSomething() {
           const done = phase === "grown" || i < step;
           const now = i === step;
           return (
-            <li key={x.phase} aria-current={now ? "step" : undefined} className={`flex items-center gap-2 ${now ? "font-semibold text-loam" : done ? "text-green" : "text-loam/55"}`}>
+            <li key={x.phase} aria-current={now ? "step" : undefined} className={`flex items-center gap-2 ${now ? "font-semibold text-ink" : done ? "text-forest" : "text-ink/55"}`}>
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full border text-[0.8rem] ${
-                  now ? "border-loam bg-loam text-limestone" : done ? "border-green bg-green text-limestone" : "border-loam/40"
+                  now ? "border-ink bg-ink text-cream" : done ? "border-forest bg-forest text-cream" : "border-ink/40"
                 }`}
               >
                 {done ? <span aria-hidden>✓</span> : i + 1}
@@ -231,15 +231,13 @@ export function PlantSomething() {
         })}
       </ol>
 
-      <div className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
+      <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
-          {/* fence and ground, as on the home page */}
-          {Array.from({ length: 11 }, (_, i) => (
-            <rect key={i} x={i * 40 + 2} y={36 + (i % 3) * 3} width="37" height="230" fill={i % 2 ? "#D3DBC8" : "#D7DFCC"} />
-          ))}
-          <rect x="0" y="96" width={W} height="5" fill="#C9D2BD" />
-          <rect x="0" y="200" width={W} height="5" fill="#C9D2BD" />
-          <rect x="0" y="300" width={W} height="60" fill="#A9B79B" />
+          {/* sky, sun and distant shrubs, as in the original home scene */}
+          <circle cx="350" cy="64" r="30" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 84c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 250c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 8 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="300" width={W} height="60" fill="#8FA884" />
 
           {/* a patch of open ground */}
           <path d="M50 236H370L398 300H22Z" fill="#6B4F3A" />
@@ -328,7 +326,7 @@ export function PlantSomething() {
         </svg>
 
         {current && (
-          <p className="pointer-events-none absolute left-4 top-4 rounded-full bg-paper/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-loam">
+          <p className="pointer-events-none absolute left-4 top-4 rounded-full bg-cream/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-ink">
             {current.hint}
           </p>
         )}
@@ -338,7 +336,7 @@ export function PlantSomething() {
           <button
             type="button"
             onClick={phase === "dig" ? digFromButton : phase === "plant" ? plantFromButton : waterFromButton}
-            className="absolute bottom-3 right-3 rounded-full bg-paper px-4 py-2 text-[0.92rem] font-semibold text-loam shadow-[0_1px_0_rgb(30_42_31/0.2)] hover:bg-limestone"
+            className="absolute bottom-3 right-3 rounded-full bg-cream px-4 py-2 text-[0.92rem] font-semibold text-ink shadow-[0_1px_0_rgb(28_33_27/0.2)] hover:bg-cream"
           >
             {current.action}
           </button>
@@ -353,7 +351,7 @@ export function PlantSomething() {
               <PlantLabel plant={plant} description />
             </div>
           ) : (
-            <p className="pt-1 text-loam/65">Something from my plant list is waiting in the tray. Dig, plant, water, and see what grows.</p>
+            <p className="pt-1 text-ink/65">Something from my plant list is waiting in the tray. Dig, plant, water, and see what grows.</p>
           )}
         </div>
         <button type="button" onClick={plantAnother} className={`btn-quiet ${phase === "grown" ? "" : "invisible"}`}>
@@ -384,10 +382,10 @@ function StartItem({ plant }: { plant: Plant }) {
   }
   return (
     <g>
-      <rect x="-16" y="-46" width="32" height="46" rx="2" fill="#FBFBF7" stroke="#1E2A1F" strokeOpacity="0.3" />
+      <rect x="-16" y="-46" width="32" height="46" rx="2" fill="#F6F1E6" stroke="#1C211B" strokeOpacity="0.3" />
       <rect x="-16" y="-46" width="32" height="8" rx="2" fill={plant.tone} />
       <path d="M0-8V-18" stroke="#4E7246" strokeWidth="1.6" />
-      <circle cx="0" cy="-23" r="6" fill={plant.tone} stroke="#1E2A1F" strokeOpacity="0.25" />
+      <circle cx="0" cy="-23" r="6" fill={plant.tone} stroke="#1C211B" strokeOpacity="0.25" />
       <circle cx="0" cy="-23" r="2" fill="#5A4231" />
     </g>
   );

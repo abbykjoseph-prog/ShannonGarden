@@ -8,11 +8,11 @@ export function CtaBand({
   body?: string;
 }) {
   return (
-    <section className="border-t border-loam/15">
+    <section className="border-t border-ink/15">
       <div className="wrap grid gap-8 py-16 md:grid-cols-12 md:items-end md:py-24">
         <div className="md:col-span-7">
           <h2 className="text-[2.4rem] leading-[1.05] sm:text-5xl">{title}</h2>
-          <p className="mt-4 max-w-prose text-loam/75">{body}</p>
+          <p className="mt-4 max-w-prose text-ink/75">{body}</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row md:col-span-5 md:justify-end">
           <Link href="/contact" className="btn-primary">Book a garden visit</Link>

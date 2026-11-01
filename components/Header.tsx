@@ -88,7 +88,7 @@ export function Header() {
 
       <header
         ref={headerRef}
-        className={`sticky top-0 z-40 border-b border-loam/10 bg-limestone/95 backdrop-blur-sm transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none lg:fixed lg:inset-x-0 ${
+        className={`sticky top-0 z-40 border-b border-ink/10 bg-cream/95 backdrop-blur-sm transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none lg:fixed lg:inset-x-0 ${
           docked ? "" : "lg:pointer-events-none lg:-translate-y-full lg:opacity-0"
         }`}
       >
@@ -111,12 +111,12 @@ export function Header() {
                   <Link
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className="group relative block px-3 py-2 text-[0.98rem] text-loam/70 transition-colors hover:text-loam aria-[current=page]:text-loam"
+                    className="group relative block px-3 py-2 text-[0.98rem] text-ink/70 transition-colors hover:text-ink aria-[current=page]:text-ink"
                   >
                     {item.label}
                     <span
                       aria-hidden
-                      className="absolute inset-x-3 bottom-0.5 h-[2px] origin-left scale-x-0 bg-coneflower transition-transform duration-200 group-hover:scale-x-[0.4] group-aria-[current=page]:scale-x-100 motion-reduce:transition-none"
+                      className="absolute inset-x-3 bottom-0.5 h-[2px] origin-left scale-x-0 bg-clay transition-transform duration-200 group-hover:scale-x-[0.4] group-aria-[current=page]:scale-x-100 motion-reduce:transition-none"
                     />
                   </Link>
                 </li>
@@ -132,7 +132,7 @@ export function Header() {
             <button
               ref={toggleRef}
               type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-loam hover:bg-loam/5 lg:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-ink hover:bg-ink/5 lg:hidden"
               aria-expanded={open}
               aria-controls="mobile-menu"
               onClick={() => setOpen((o) => !o)}
@@ -155,17 +155,17 @@ export function Header() {
           }`}
         >
           <div className="overflow-hidden">
-            <nav aria-label="Mobile" className="wrap border-t border-loam/10 pb-6 pt-2">
+            <nav aria-label="Mobile" className="wrap border-t border-ink/10 pb-6 pt-2">
               <ul>
                 {nav.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       aria-current={isActive(item.href) ? "page" : undefined}
-                      className="flex items-baseline justify-between border-b border-loam/10 py-3.5 font-display text-[1.75rem] font-light text-loam"
+                      className="flex items-baseline justify-between border-b border-ink/10 py-3.5 font-display text-[1.75rem] font-light text-ink"
                     >
                       {item.label}
-                      {isActive(item.href) && <span className="font-sans text-sm text-coneflower">You&apos;re here</span>}
+                      {isActive(item.href) && <span className="font-sans text-sm text-clay">You&apos;re here</span>}
                     </Link>
                   </li>
                 ))}

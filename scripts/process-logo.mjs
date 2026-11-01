@@ -7,8 +7,8 @@ const SQUARE = "square logo.png"; // RGBA, black monogram on transparent
 const WIDTH = 1800;
 
 // Palette roles, kept in step with app/globals.css.
-const LIMESTONE = [0xee, 0xf0, 0xe9];
-const PALE_SAGE = [0xc5, 0xd1, 0xbf];
+const CREAM = [0xf6, 0xf1, 0xe6];
+const PALE_SAGE = [0xc9, 0xd8, 0xbf];
 let GREEN = [0x39, 0x54, 0x37];
 
 // ---- Long logo -------------------------------------------------------------
@@ -67,7 +67,7 @@ const saveLong = (buf, file) =>
 
 await saveLong(out, "public/logo-long.png");
 
-// Light variant for the dark footer: green -> pale sage, black script -> limestone.
+// Light variant for the dark footer: green -> pale sage, black script -> cream.
 const light = Buffer.from(out);
 for (let i = 0; i < px; i++) {
   const o = i * 4;
@@ -75,7 +75,7 @@ for (let i = 0; i < px; i++) {
   const r = light[o], g = light[o + 1], b = light[o + 2];
   // How "green" vs "black" this pixel is, blended for anti-aliased edges.
   const greenness = Math.max(0, Math.min(1, (g - Math.max(r, b)) / (GREEN[1] - Math.max(GREEN[0], GREEN[2]))));
-  for (let k = 0; k < 3; k++) light[o + k] = Math.round(PALE_SAGE[k] * greenness + LIMESTONE[k] * (1 - greenness));
+  for (let k = 0; k < 3; k++) light[o + k] = Math.round(PALE_SAGE[k] * greenness + CREAM[k] * (1 - greenness));
 }
 await saveLong(light, "public/logo-long-light.png");
 
@@ -93,17 +93,17 @@ const tint = async (rgb, size) => {
 };
 
 await (await tint(GREEN, 600)).toFile("public/monogram.png").then(report("public/monogram.png"));
-await (await tint(LIMESTONE, 600)).toFile("public/monogram-light.png").then(report("public/monogram-light.png"));
+await (await tint(CREAM, 600)).toFile("public/monogram-light.png").then(report("public/monogram-light.png"));
 
-// Home-screen icon: green monogram on limestone.
-const bg = (w, h) => ({ create: { width: w, height: h, channels: 3, background: { r: LIMESTONE[0], g: LIMESTONE[1], b: LIMESTONE[2] } } });
+// Home-screen icon: green monogram on cream.
+const bg = (w, h) => ({ create: { width: w, height: h, channels: 3, background: { r: CREAM[0], g: CREAM[1], b: CREAM[2] } } });
 await sharp(bg(180, 180))
   .composite([{ input: await (await tint(GREEN, 136)).toBuffer(), gravity: "center" }])
   .png()
   .toFile("app/apple-icon.png")
   .then(report("app/apple-icon.png"));
 
-// Social share image: the long logo centred on limestone.
+// Social share image: the long logo centred on cream.
 await sharp(bg(1200, 630))
   .composite([{ input: await sharp("public/logo-long.png").resize({ width: 940 }).toBuffer(), gravity: "center" }])
   .png({ compressionLevel: 9 })

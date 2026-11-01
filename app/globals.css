@@ -2,30 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Palette by role. Channels only, so Tailwind can apply opacity. */
-  --green: 57 84 55; /* #395437, sampled from the logo */
-  --green-deep: 40 61 39; /* #283D27, hover and pressed */
-  --loam: 30 42 31; /* #1E2A1F, text and the dark footer */
-  --limestone: 238 240 233; /* #EEF0E9, page background */
-  --limestone-deep: 225 230 217; /* #E1E6D9, quiet panels */
-  --moss: 197 209 191; /* #C5D1BF, light text on loam */
-  --paper: 251 251 247; /* #FBFBF7, plant tags and plan sheets */
-  --soil-dry: 107 79 58; /* #6B4F3A */
-  --soil-wet: 62 44 32; /* #3E2C20 */
-  --coneflower: 181 87 126; /* #B5577E, the single accent */
-}
-
 @layer base {
   html {
-    @apply bg-limestone text-loam antialiased;
+    @apply bg-cream text-ink antialiased;
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-limestone font-sans text-[1.0625rem] leading-[1.65] md:text-[1.125rem];
+    @apply bg-cream font-sans text-[1.0625rem] leading-[1.65] md:text-[1.125rem];
   }
   h1, h2, h3 {
-    @apply font-display text-loam;
+    @apply font-display text-forest-deep;
     font-optical-sizing: auto;
     letter-spacing: -0.02em;
     font-weight: 380;
@@ -39,10 +25,10 @@
     text-wrap: pretty;
   }
   ::selection {
-    @apply bg-moss text-loam;
+    @apply bg-sage text-forest-night;
   }
   :focus-visible {
-    @apply rounded-[2px] outline outline-[3px] outline-offset-2 outline-coneflower;
+    @apply rounded-[2px] outline outline-[3px] outline-offset-2 outline-clay;
   }
 }
 
@@ -55,16 +41,16 @@
     letter-spacing: 0;
   }
   .link {
-    @apply underline decoration-coneflower/60 decoration-1 underline-offset-[0.2em] transition-colors hover:decoration-coneflower hover:decoration-2;
+    @apply underline decoration-clay/60 decoration-1 underline-offset-[0.2em] transition-colors hover:decoration-clay hover:decoration-2;
   }
   .btn {
     @apply inline-flex min-h-[2.875rem] items-center justify-center rounded-full px-6 text-[0.98rem] font-semibold transition-colors;
   }
   .btn-primary {
-    @apply btn bg-green text-limestone hover:bg-green-deep;
+    @apply btn bg-forest text-cream hover:bg-forest-deep;
   }
   .btn-quiet {
-    @apply btn border border-loam/25 text-loam hover:border-loam/60 hover:bg-loam/[0.04];
+    @apply btn border border-forest/40 text-forest-deep hover:border-forest hover:bg-forest/5;
   }
 }
 

@@ -4,8 +4,8 @@ import type { Area, Plan, PlantForm, Pt } from "./types";
 const W = 400;
 const H = 260;
 const LOT = { x: 16, y: 16, w: 368, h: 228 };
-const INK = "#1E2A1F";
-const PAPER = "#FBFBF7";
+const INK = "#1C211B";
+const PAPER = "#F6F1E6";
 const GOLDEN = Math.PI * (3 - Math.sqrt(5));
 
 const areaFill: Record<Area["kind"], string> = {
@@ -140,7 +140,7 @@ function SteppingStones({ points }: { points: Pt[] }) {
   return (
     <g>
       {stones.map((s, i) => (
-        <rect key={i} x={s.x - 5} y={s.y - 7} width="10" height="14" rx="3" transform={`rotate(${s.a} ${s.x} ${s.y})`} fill="#D7D8D0" stroke={INK} strokeOpacity="0.6" strokeWidth="0.6" />
+        <rect key={i} x={s.x - 5} y={s.y - 7} width="10" height="14" rx="3" transform={`rotate(${s.a} ${s.x} ${s.y})`} fill="#EFE7D6" stroke={INK} strokeOpacity="0.6" strokeWidth="0.6" />
       ))}
     </g>
   );
@@ -155,11 +155,11 @@ export function PlanDrawing({ plan, state, id }: { plan: Plan; state: "before" |
     <svg viewBox={`0 0 ${W} ${H}`} className="block h-full w-full" aria-hidden>
       <defs>
         <pattern id={`${id}-turf`} width="9" height="9" patternUnits="userSpaceOnUse">
-          <rect width="9" height="9" fill="#E3E9D9" />
+          <rect width="9" height="9" fill="#E3EBDC" />
           <path d="M2 6l1-3M6 8.5l1-3M5.5 3l.8-2.4" stroke="#6E8F62" strokeWidth="0.6" strokeLinecap="round" />
         </pattern>
         <pattern id={`${id}-paving`} width="14" height="10" patternUnits="userSpaceOnUse">
-          <rect width="14" height="10" fill="#E6E6DF" />
+          <rect width="14" height="10" fill="#EFE7D6" />
           <path d="M0 0h14M0 5h14M7 0v5M0 5v5M14 5v5" stroke={INK} strokeOpacity="0.22" strokeWidth="0.5" />
         </pattern>
         <pattern id={`${id}-mulch`} width="7" height="7" patternUnits="userSpaceOnUse">

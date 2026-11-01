@@ -46,11 +46,11 @@ export function PrivacyNotice() {
   return (
     <section
       aria-label="Privacy note"
-      className={`fixed inset-x-0 bottom-0 z-50 border-t border-loam/15 bg-paper px-4 py-3 shadow-[0_-2px_12px_rgb(30_42_31/0.08)] animate-[settle_300ms_ease-out] motion-reduce:animate-none sm:inset-x-auto sm:bottom-5 sm:right-5 sm:max-w-sm sm:rounded-xl sm:border sm:p-5 ${
+      className={`fixed inset-x-0 bottom-0 z-50 border-t border-ink/15 bg-cream-warm px-4 py-3 shadow-[0_-2px_12px_rgb(28_33_27/0.08)] animate-[settle_300ms_ease-out] motion-reduce:animate-none sm:inset-x-auto sm:bottom-5 sm:right-5 sm:max-w-sm sm:rounded-xl sm:border sm:p-5 ${
         canInView ? "max-sm:hidden" : ""
       }`}
     >
-      <p className="text-[0.95rem] leading-snug text-loam/85">
+      <p className="text-[0.95rem] leading-snug text-ink/85">
         This site doesn&apos;t use cookies or track you. If you use the contact form, your details are only used to reply
         to you.
       </p>

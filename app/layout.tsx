@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: { siteName: site.businessName, locale: "en_CA", type: "website" },
 };
 
-export const viewport: Viewport = { themeColor: "#EEF0E9" };
+export const viewport: Viewport = { themeColor: "#F6F1E6" };
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-green focus:px-4 focus:py-2 focus:text-limestone"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-forest focus:px-4 focus:py-2 focus:text-cream"
         >
           Skip to content
         </a>

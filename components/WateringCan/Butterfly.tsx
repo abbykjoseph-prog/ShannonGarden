@@ -188,9 +188,9 @@ export function ButterflyArt({ phase }: { phase: FlyPhase }) {
       <path d="M0-2C-6-20-26-26-30-14-33-4-18 2 0 0Z" fill="#E2803A" stroke="#2A1E14" strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M0 1C-14 2-24 10-20 20-15 26-4 16 0 4Z" fill="#D86E2A" stroke="#2A1E14" strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M-4-4L-24-14M-4 2L-18 14" stroke="#2A1E14" strokeWidth="0.8" />
-      <circle cx="-27" cy="-13" r="1.3" fill="#FBFBF7" />
-      <circle cx="-22" cy="-20" r="1.1" fill="#FBFBF7" />
-      <circle cx="-18" cy="19" r="1.1" fill="#FBFBF7" />
+      <circle cx="-27" cy="-13" r="1.3" fill="#F6F1E6" />
+      <circle cx="-22" cy="-20" r="1.1" fill="#F6F1E6" />
+      <circle cx="-18" cy="19" r="1.1" fill="#F6F1E6" />
     </>
   );
   return (

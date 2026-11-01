@@ -197,13 +197,13 @@ export function DesignBed() {
 
   return (
     <figure>
-      <div className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
+      <div className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full select-none" aria-hidden {...svgHandlers}>
-          {Array.from({ length: 13 }, (_, i) => (
-            <rect key={i} x={i * 40 + 2} y={20 + (i % 3) * 3} width="37" height="240" fill={i % 2 ? "#D3DBC8" : "#D7DFCC"} />
-          ))}
-          <rect x="0" y="210" width={W} height="5" fill="#C9D2BD" />
-          <rect x="0" y="340" width={W} height="40" fill="#A9B79B" />
+          {/* sky, sun and distant shrubs, as in the original home scene */}
+          <circle cx="410" cy="64" r="30" fill="#F3E2B8" opacity="0.85" />
+          <path d="M34 84c14-10 30-10 42 0 10-7 26-7 34 3H34Z" fill="#F6F1E6" opacity="0.8" />
+          <path d="M0 250c40-46 92-50 130-14 34-40 92-44 132-6 40-34 110-40 150 2 40-30 100-28 68 4v80H0Z" fill="#A9BF9F" opacity="0.55" />
+          <rect x="0" y="340" width={W} height="40" fill="#8FA884" />
 
           {/* the tray shelf */}
           <rect x="22" y={SHELF_Y} width={W - 44} height="9" rx="2" fill="#9C7A58" />
@@ -214,7 +214,7 @@ export function DesignBed() {
             live={
               kbd && (
                 <g className={s.marker}>
-                  <ellipse cx={kbd.at.x} cy={kbd.at.y} rx="24" ry="8" fill="none" stroke="#FBFBF7" strokeWidth="2" strokeDasharray="5 4" />
+                  <ellipse cx={kbd.at.x} cy={kbd.at.y} rx="24" ry="8" fill="none" stroke="#F6F1E6" strokeWidth="2" strokeDasharray="5 4" />
                   <g opacity="0.55">
                     <PlantArt plant={getPlant(kbd.id)} x={kbd.at.x} y={kbd.at.y} scale={scaleAt(kbd.at.y)} grow={false} />
                   </g>
@@ -293,12 +293,12 @@ export function DesignBed() {
         {photo === "flash" && <div aria-hidden className={`${s.flash} pointer-events-none absolute inset-0 bg-white`} />}
 
         {photo === "shown" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-loam/10 p-[6%]">
-            <div className={`${s.polaroid} w-[78%] bg-paper p-[3%] pb-0 shadow-[0_10px_30px_rgb(30_42_31/0.3)]`} style={{ transform: "rotate(-3deg)" }}>
-              <svg viewBox={`10 ${BED.backY - 120} ${W - 20} ${BED.frontY - BED.backY + 168}`} className="block w-full bg-[#DDE4D3]" role="img" aria-label="A photo of your planted bed">
+          <div className="absolute inset-0 flex items-center justify-center bg-ink/10 p-[6%]">
+            <div className={`${s.polaroid} w-[78%] bg-cream p-[3%] pb-0 shadow-[0_10px_30px_rgb(28_33_27/0.3)]`} style={{ transform: "rotate(-3deg)" }}>
+              <svg viewBox={`10 ${BED.backY - 120} ${W - 20} ${BED.frontY - BED.backY + 168}`} className="block w-full bg-[#E3EBDC]" role="img" aria-label="A photo of your planted bed">
                 <BedArt placed={IDS.map((id) => [getPlant(id), placed[id]!] as [Plant, Pt])} />
               </svg>
-              <p className="py-[4%] text-center text-[clamp(1.5rem,4vw,2.1rem)] leading-none text-loam" style={{ fontFamily: '"Caveat Variable", cursive' }}>
+              <p className="py-[4%] text-center text-[clamp(1.5rem,4vw,2.1rem)] leading-none text-ink" style={{ fontFamily: '"Caveat Variable", cursive' }}>
                 Picture perfect
               </p>
             </div>
@@ -314,7 +314,7 @@ export function DesignBed() {
               <PlantLabel plant={info} description />
             </div>
           ) : (
-            <p className="pt-1 text-loam/65">Drag a plant into the bed.</p>
+            <p className="pt-1 text-ink/65">Drag a plant into the bed.</p>
           )}
         </div>
         <button

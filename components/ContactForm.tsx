@@ -78,15 +78,15 @@ export function ContactForm() {
   )}`;
 
   const field = (k: keyof ContactFields) =>
-    `mt-1.5 block w-full rounded-lg border bg-paper px-3.5 py-3 text-loam placeholder:text-loam/40 transition-colors focus:outline-none focus-visible:outline-none focus:ring-[3px] focus:ring-coneflower/35 ${
-      errors[k] ? "border-coneflower" : "border-loam/25 focus:border-loam/60"
+    `mt-1.5 block w-full rounded-lg border bg-cream px-3.5 py-3 text-ink placeholder:text-ink/40 transition-colors focus:outline-none focus-visible:outline-none focus:ring-[3px] focus:ring-clay/35 ${
+      errors[k] ? "border-clay" : "border-ink/25 focus:border-ink/60"
     }`;
 
   const describe = (k: keyof ContactFields, hint?: string) => [hint && `${k}-hint`, errors[k] && `${k}-error`].filter(Boolean).join(" ") || undefined;
 
   const Err = ({ k }: { k: keyof ContactFields }) =>
     errors[k] ? (
-      <p id={`${k}-error`} className="mt-1.5 text-[0.92rem] text-coneflower">
+      <p id={`${k}-error`} className="mt-1.5 text-[0.92rem] text-clay">
         {errors[k]}
       </p>
     ) : null;
@@ -95,7 +95,7 @@ export function ContactForm() {
     return (
       <div ref={statusRef} tabIndex={-1} role="status" className="animate-[settle_300ms_ease-out] motion-reduce:animate-none">
         <h2 className="text-3xl">Thanks, {status.name}. Your note is with me.</h2>
-        <p className="mt-3 max-w-prose text-loam/80">
+        <p className="mt-3 max-w-prose text-ink/80">
           I&apos;ll reply {site.responseTime} to arrange a time to see the garden. If it&apos;s urgent, my number is on
           this page under &ldquo;Reach me directly&rdquo;.
         </p>
@@ -120,7 +120,7 @@ export function ContactForm() {
       </div>
       <div>
         <label htmlFor="phone" className="font-semibold">
-          {labels.phone} <span className="font-normal text-loam/60">(optional)</span>
+          {labels.phone} <span className="font-normal text-ink/60">(optional)</span>
         </label>
         <input id="phone" name="phone" type="tel" value={values.phone} onChange={set("phone")} autoComplete="tel" aria-invalid={!!errors.phone} aria-describedby={describe("phone")} className={field("phone")} />
         <Err k="phone" />
@@ -132,7 +132,7 @@ export function ContactForm() {
       </div>
       <div className="sm:col-span-2">
         <label htmlFor="help" className="font-semibold">{labels.help}</label>
-        <select id="help" name="help" value={values.help} onChange={set("help")} aria-invalid={!!errors.help} aria-describedby={describe("help")} className={`${field("help")} appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22><path d=%22M1 1l5 5 5-5%22 fill=%22none%22 stroke=%22%231E2A1F%22 stroke-width=%221.6%22/></svg>')] bg-[right_1rem_center] bg-no-repeat pr-10`}>
+        <select id="help" name="help" value={values.help} onChange={set("help")} aria-invalid={!!errors.help} aria-describedby={describe("help")} className={`${field("help")} appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22><path d=%22M1 1l5 5 5-5%22 fill=%22none%22 stroke=%22%231C211B%22 stroke-width=%221.6%22/></svg>')] bg-[right_1rem_center] bg-no-repeat pr-10`}>
           <option value="" disabled>Choose one</option>
           {services.map((s) => (
             <option key={s.slug}>{s.title}</option>
@@ -143,7 +143,7 @@ export function ContactForm() {
       </div>
       <div className="sm:col-span-2">
         <label htmlFor="message" className="font-semibold">{labels.message}</label>
-        <p id="message-hint" className="text-[0.92rem] text-loam/65">Roughly how big, sun or shade, what&apos;s there now and what you&apos;d like.</p>
+        <p id="message-hint" className="text-[0.92rem] text-ink/65">Roughly how big, sun or shade, what&apos;s there now and what you&apos;d like.</p>
         <textarea id="message" name="message" rows={5} value={values.message} onChange={set("message")} aria-invalid={!!errors.message} aria-describedby={describe("message", "hint")} className={field("message")} />
         <Err k="message" />
       </div>
@@ -160,13 +160,13 @@ export function ContactForm() {
         </button>
 
         {Object.keys(errors).some((k) => errors[k as keyof ContactFields]) && status.kind === "idle" && (
-          <p className="mt-3 text-[0.95rem] text-coneflower">A few details need fixing before this can send. They&apos;re marked above.</p>
+          <p className="mt-3 text-[0.95rem] text-clay">A few details need fixing before this can send. They&apos;re marked above.</p>
         )}
 
         {(status.kind === "unavailable" || status.kind === "failed") && (
-          <div ref={statusRef} tabIndex={-1} role="alert" className="mt-5 animate-[settle_300ms_ease-out] rounded-lg border-l-[3px] border-coneflower bg-paper p-4 motion-reduce:animate-none">
+          <div ref={statusRef} tabIndex={-1} role="alert" className="mt-5 animate-[settle_300ms_ease-out] rounded-lg border-l-[3px] border-clay bg-cream p-4 motion-reduce:animate-none">
             <p className="font-semibold">Your message hasn&apos;t been sent.</p>
-            <p className="mt-1 text-loam/80">
+            <p className="mt-1 text-ink/80">
               {status.kind === "unavailable"
                 ? "The contact form isn't switched on yet."
                 : "Something went wrong on my end."}{" "}

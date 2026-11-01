@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function Work() {
   return (
     <>
-      <PageIntro title={<>Gardens across the city, <em className="text-green">tended by one pair of hands.</em></>}>
+      <PageIntro title={<>Gardens across the city, <em className="text-forest">tended by one pair of hands.</em></>}>
         <p>
           A few recent projects from around the GTA. Drag the slider on each plan to compare the garden before and
           after. Every one was designed, planted and looked after by me.
@@ -26,7 +26,7 @@ export default function Work() {
           return (
             <article key={p.slug} aria-labelledby={`${p.slug}-title`} className="grid gap-x-14 gap-y-8 md:grid-cols-12">
               <header className={`md:col-span-12 ${i % 2 ? "md:pl-[8%]" : ""}`}>
-                <p className="text-[0.98rem] text-loam/65">
+                <p className="text-[0.98rem] text-ink/65">
                   {p.place}, {p.year} · {p.type}
                 </p>
                 <h2 id={`${p.slug}-title`} className="mt-2 max-w-[22ch] text-[2.2rem] leading-[1.05] sm:text-5xl">
@@ -39,12 +39,12 @@ export default function Work() {
               </div>
 
               <div className={`md:col-span-5 ${i % 2 ? "md:order-1" : ""}`}>
-                <p className="max-w-prose text-loam/80">{p.brief}</p>
+                <p className="max-w-prose text-ink/80">{p.brief}</p>
                 <h3 className="mt-6 font-sans text-[1rem] font-semibold tracking-normal">What I did</h3>
-                <ul className="mt-2 space-y-1.5 text-loam/80">
+                <ul className="mt-2 space-y-1.5 text-ink/80">
                   {p.done.map((d) => (
                     <li key={d} className="grid grid-cols-[1rem_1fr]">
-                      <span aria-hidden className="mt-[0.7em] h-1 w-1 rounded-full bg-green" />
+                      <span aria-hidden className="mt-[0.7em] h-1 w-1 rounded-full bg-forest" />
                       {d}
                     </li>
                   ))}

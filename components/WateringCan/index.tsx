@@ -175,7 +175,7 @@ export function WateringCan() {
 
   return (
     <figure id="watering-can" className="relative">
-      <div ref={wrapRef} className="relative overflow-hidden rounded-[1.75rem] bg-[#DDE4D3]">
+      <div ref={wrapRef} className="relative overflow-hidden rounded-[1.75rem] bg-[#E3EBDC]">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${SCENE.w} ${SCENE.h}`}
@@ -201,8 +201,8 @@ export function WateringCan() {
           <rect x="0" y="250" width="560" height="5" fill="#C9D2BD" />
 
           {/* ground and shadow */}
-          <rect x="0" y="392" width="560" height="48" fill="#A9B79B" />
-          <ellipse cx="280" cy="410" rx="260" ry="10" fill="#1E2A1F" opacity="0.12" />
+          <rect x="0" y="392" width="560" height="48" fill="#8FA884" />
+          <ellipse cx="280" cy="410" rx="260" ry="10" fill="#1C211B" opacity="0.12" />
 
           {/* raised bed: soil surface in perspective, timber front */}
           <path d="M70 282H490L522 338H38Z" fill="#6B4F3A" />
@@ -288,13 +288,13 @@ export function WateringCan() {
           style={{ opacity: fly.oops ? 1 : 0 }}
           aria-hidden
         >
-          <span className="inline-block rounded-full bg-paper px-3 py-1 text-[0.88rem] font-semibold sm:text-[0.95rem]">
+          <span className="inline-block rounded-full bg-cream px-3 py-1 text-[0.88rem] font-semibold sm:text-[0.95rem]">
             Oops! Easy there, we need our pollinators.
           </span>
         </p>
 
         <p
-          className={`${s.hint} pointer-events-none absolute left-4 top-4 rounded-full bg-paper/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-loam`}
+          className={`${s.hint} pointer-events-none absolute left-4 top-4 rounded-full bg-cream/95 px-3.5 py-1.5 text-[0.88rem] font-semibold text-ink`}
           style={{ opacity: started ? 0 : 1 }}
           aria-hidden={started}
         >
@@ -306,17 +306,17 @@ export function WateringCan() {
         {/* Fixed height, sized for the longest name wrapping to two lines, so Replant never moves. */}
         <div className="h-[7.25rem]">
           {lastBloom !== null ? (
-            <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-paper px-4 py-2.5 ring-1 ring-loam/10`}>
+            <div key={lastBloom} className={`${s.tag} inline-block rounded-md bg-cream px-4 py-2.5 ring-1 ring-ink/10`}>
               <PlantLabel plant={getPlant(PATCHES[lastBloom].plantId)} />
             </div>
           ) : (
-            <p className="pt-2.5 text-loam/70">Three native Ontario perennials, waiting for water.</p>
+            <p className="pt-2.5 text-ink/70">Three native Ontario perennials, waiting for water.</p>
           )}
         </div>
         <button
           type="button"
           onClick={replant}
-          className={`link text-[0.98rem] text-loam/80 ${moist.some((m) => m > 0) ? "" : "invisible"}`}
+          className={`link text-[0.98rem] text-ink/80 ${moist.some((m) => m > 0) ? "" : "invisible"}`}
         >
           Replant the bed
         </button>
