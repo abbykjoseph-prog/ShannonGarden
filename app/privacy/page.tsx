@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Privacy() {
   return (
-    <LegalPage title="Privacy policy">
+    <LegalPage eyebrow="Privacy policy" title="Privacy policy">
       <p>
         This policy explains what information {site.businessName} collects through this website and what I do with it. The
         business is operated by {site.ownerName}, a sole proprietor in Ontario, and I follow Canada&apos;s federal privacy law for businesses, the

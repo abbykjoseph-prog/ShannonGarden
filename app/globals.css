@@ -36,6 +36,9 @@
   .wrap {
     @apply mx-auto w-full max-w-page px-4 sm:px-8 lg:px-12;
   }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-forest;
+  }
   .latin {
     @apply font-display italic;
     letter-spacing: 0;

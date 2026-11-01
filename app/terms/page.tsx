@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Terms() {
   return (
-    <LegalPage title="Terms and conditions">
+    <LegalPage eyebrow="Terms and conditions" title="Terms and conditions">
       <p>
         This website is operated by {site.ownerName}, trading as {site.businessName}. These terms cover your use of it. By
         using it, you agree to them.

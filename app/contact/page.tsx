@@ -14,7 +14,8 @@ export default function Contact() {
     <>
       <section className="wrap grid gap-x-16 gap-y-12 pb-20 pt-14 md:grid-cols-12 md:pt-20">
         <div className="md:col-span-5 md:row-start-1">
-          <h1 className="text-[2.9rem] leading-[1] sm:text-6xl md:text-7xl">
+          <p className="eyebrow">Contact</p>
+          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl md:text-7xl">
             Book a <em className="text-forest">garden visit.</em>
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-ink/75">

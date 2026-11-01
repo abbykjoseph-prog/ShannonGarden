@@ -18,7 +18,8 @@ export default function Home() {
     <>
       <section className="wrap grid items-center gap-x-14 gap-y-12 pb-16 pt-10 md:grid-cols-12 md:pb-24 md:pt-16">
         <div className="md:col-span-5">
-          <h1 className="text-[3.1rem] leading-[0.98] sm:text-7xl lg:text-[5.4rem]">
+          <p className="eyebrow">Gardener · {site.region}</p>
+          <h1 className="mt-5 text-[3.1rem] leading-[0.98] sm:text-7xl lg:text-[5.4rem]">
             City gardens, <em className="text-forest">grown properly.</em>
           </h1>
           <p className="mt-7 max-w-[42ch] text-[1.15rem] text-ink/80">

@@ -16,7 +16,8 @@ export default function About() {
     <>
       <section className="wrap grid items-start gap-x-14 gap-y-10 pb-16 pt-14 md:grid-cols-12 md:pb-24 md:pt-20">
         <div className="md:col-span-5">
-          <h1 className="text-[2.9rem] leading-[1] sm:text-6xl lg:text-[4.2rem]">
+          <p className="eyebrow">About</p>
+          <h1 className="mt-4 text-[2.9rem] leading-[1] sm:text-6xl lg:text-[4.2rem]">
             Bringing the craft of horticulture <em className="text-forest">back into city life.</em>
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-ink/75">

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function Work() {
   return (
     <>
-      <PageIntro title={<>Gardens across the city, <em className="text-forest">tended by one pair of hands.</em></>}>
+      <PageIntro eyebrow="Work & testimonials" title={<>Gardens across the city, <em className="text-forest">tended by one pair of hands.</em></>}>
         <p>
           A few recent projects from around the GTA. Drag the slider on each plan to compare the garden before and
           after. Every one was designed, planted and looked after by me.
