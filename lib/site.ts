@@ -368,8 +368,8 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     month: "February",
     note: "Still cold, but the season starts indoors.",
     tasks: [
-      { title: "Winter-sow native seeds", body: "Sow milkweed, coneflower and other natives that need cold stratification in containers outside. Freezing and thawing does the work." },
-      { title: "Prune fruit trees while dormant", body: "Apples and pears are easiest to shape now, when you can see the branch structure and before buds swell." },
+      { title: "Sow native seeds in pots outside", body: "Milkweed, coneflower and many other natives need a cold spell before they'll sprout. Sow them in pots, leave them outside and let winter do the work." },
+      { title: "Prune fruit trees while they're bare", body: "Apples and pears are easiest to shape now, when you can see the branch structure and before buds swell." },
       { title: "Start onions and leeks indoors", body: "Slow growers like onions, leeks and peppers can be started under lights from mid to late February." },
       { title: "Look for rodent damage", body: "Check the base of young trees and shrubs for chewed bark. Wrap trunks with hardware cloth if rabbits or voles have found them." },
     ],
@@ -389,7 +389,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     note: "Clean up slowly. Plenty of insects are still asleep in last year's stems.",
     tasks: [
       { title: "Wait for warmth before clean-up", body: "Hold off on a full clean-up until daytime temperatures are reliably around 10°C. Cut hollow stems to 30–45 cm so native bees can nest in them." },
-      { title: "Direct-sow cool-season crops", body: "Peas, spinach, lettuce and radishes can go straight into the ground once the soil can be worked." },
+      { title: "Sow cool-weather vegetables outside", body: "Peas, spinach, lettuce and radishes can be sown straight into the ground as soon as the soil is dry enough to dig." },
       { title: "Prune roses when the forsythia blooms", body: "That yellow flush around town is your signal. Take out dead, damaged and crossing canes." },
       { title: "Divide late-flowering perennials", body: "Asters, sedums and grasses that bloom in summer and fall can be lifted and split as they start into growth." },
     ],
@@ -398,7 +398,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     month: "May",
     note: "Planting month. Toronto's last frost usually falls around mid-May.",
     tasks: [
-      { title: "Plant tender plants after the Victoria Day weekend", body: "Tomatoes, basil and annuals go out once nights stay above 10°C. Harden off seedlings for a week first." },
+      { title: "Plant tender plants after the Victoria Day weekend", body: "Tomatoes, basil and annuals go out once nights stay above 10°C. Put seedlings outside for a few hours a day for a week first, so they get used to sun and wind." },
       { title: "Plant natives and perennials", body: "Soil is warm and rain is reliable. A good month to plant, as long as you water new plants in well." },
       { title: "Watch for red lily leaf beetle", body: "Bright red beetles on lilies and fritillaries are common in the GTA. Hand-pick them into soapy water and check under leaves for larvae." },
       { title: "Mulch once the soil warms", body: "A few centimetres of shredded leaf or bark mulch keeps moisture in and weeds down. Keep it off stems and crowns." },
@@ -420,7 +420,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     tasks: [
       { title: "Water early in the morning", body: "Less evaporation and leaves dry before evening, which helps prevent mildew. Containers may need water every day in a heat wave." },
       { title: "Check boxwood for box tree moth", body: "Box tree moth is established in the GTA. Look for webbing and green-and-black caterpillars inside shrubs and remove them early." },
-      { title: "Deadhead for more flowers", body: "Snip spent blooms on annuals, roses and repeat-flowering perennials. Leave coneflower and rudbeckia seed heads later for the birds." },
+      { title: "Snip off faded flowers", body: "Cutting off spent blooms on annuals, roses and repeat-flowering perennials keeps more flowers coming. Later in summer, leave coneflower and black-eyed Susan seed heads for the birds." },
       { title: "Sow a second round of crops", body: "Late July is time to sow bush beans, carrots, kale and lettuce for a fall harvest." },
     ],
   },
@@ -428,7 +428,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     month: "August",
     note: "Late-summer abundance, and the first thoughts of fall planting.",
     tasks: [
-      { title: "Divide bearded iris", body: "Lift crowded clumps, discard old or rotten rhizomes and replant healthy pieces shallowly, tops just showing." },
+      { title: "Divide bearded iris", body: "Lift crowded clumps, throw away any old or soft pieces of root, and replant the healthy pieces shallowly with their tops just showing." },
       { title: "Keep new plantings watered", body: "Anything planted this year still needs regular deep watering through dry spells. Established natives can usually fend for themselves." },
       { title: "Order spring bulbs", body: "Order garlic and spring bulbs now for the best selection, ready to plant from late September." },
       { title: "Collect seed", body: "Save seed from native plants and heirloom vegetables as heads dry. Store in paper envelopes, labelled and dated." },
@@ -441,7 +441,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
       { title: "Plant trees, shrubs and perennials", body: "Roots keep growing well into fall, giving new plants a head start before next summer's heat." },
       { title: "Divide spring and summer bloomers", body: "Split crowded hostas, daylilies and peonies (if you must move peonies, now is the time)." },
       { title: "Bring houseplants in", body: "Move tropical plants indoors before nights drop below 10°C. Check them for pests first." },
-      { title: "Overseed thin lawn", body: "If you're keeping lawn, this is the best time to overseed bare patches, or to plan converting part of it to garden." },
+      { title: "Patch up thin lawn", body: "If you're keeping lawn, this is the best time to sow grass seed over bare patches, or to plan turning part of it into garden." },
     ],
   },
   {
@@ -468,7 +468,7 @@ export const monthlyTasks: { month: string; note: string; tasks: { title: string
     month: "December",
     note: "Rest, protect, and recycle the holidays into the garden.",
     tasks: [
-      { title: "Mulch once the ground freezes", body: "Mulching after freeze-up keeps the soil frozen and stops perennials being heaved out by freeze-thaw cycles." },
+      { title: "Mulch once the ground freezes", body: "Mulching after the ground freezes keeps it frozen, so plants aren't pushed out of the soil each time it thaws and freezes again." },
       { title: "Use evergreen boughs as mulch", body: "Cut branches from your holiday tree and lay them over perennial beds for extra winter protection." },
       { title: "Check burlap and tree guards", body: "Wind and snow loads can knock wraps loose. Re-tie them so they're still doing their job in February." },
       { title: "Shut off outdoor taps", body: "If you haven't already, close the indoor valve, drain the line and bring hoses in so nothing splits." },

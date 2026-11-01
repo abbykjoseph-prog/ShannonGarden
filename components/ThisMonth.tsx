@@ -20,11 +20,17 @@ export function ThisMonth({ initialMonth }: { initialMonth: number }) {
       <div className="wrap py-20 md:py-24">
         <div className="grid gap-6 md:grid-cols-12">
           <h2 id="this-month" className="text-[2.4rem] leading-[1.05] sm:text-5xl md:col-span-7">
-            {month === now ? "This month" : name} in a Toronto garden
+            {name} in a Toronto garden
           </h2>
-          <p className="max-w-prose text-ink/75 md:col-span-5 md:pt-3">
-            Zone 5b to 6a. Real jobs for the month, the same ones I&apos;m doing in clients&apos; gardens.
-          </p>
+          <div className="max-w-prose md:col-span-5 md:pt-3">
+            <p className="text-ink/75">
+              {month === now ? "What Toronto gardens need this month." : `What Toronto gardens need in ${name}.`} These are the
+              jobs I&apos;m doing in clients&apos; gardens{month === now ? " right now" : ""}, and you can do them in your own.
+            </p>
+            <p className="mt-2 text-[0.92rem] text-ink/55">
+              Timed for Toronto&apos;s climate (plant hardiness zone 6). Gardens north of the city may run a week or two behind.
+            </p>
+          </div>
         </div>
 
         <div role="group" aria-label="Choose a month" className="mt-10 grid grid-cols-6 border-y border-ink/20 sm:grid-cols-12">
