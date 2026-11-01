@@ -125,9 +125,6 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <a href={site.phoneHref} className="hidden text-[0.95rem] text-loam/75 hover:text-loam lg:inline">
-              {site.phone}
-            </a>
             <Link href="/contact" className="btn-primary min-h-[2.625rem] px-4 text-[0.92rem] sm:px-5">
               <span className="sm:hidden">Book a visit</span>
               <span className="hidden sm:inline">Book a garden visit</span>
@@ -173,12 +170,6 @@ export function Header() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-loam/70">
-                Or call me on{" "}
-                <a href={site.phoneHref} className="link text-loam">
-                  {site.phone}
-                </a>
-              </p>
             </nav>
           </div>
         </div>

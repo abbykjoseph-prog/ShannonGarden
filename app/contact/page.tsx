@@ -19,11 +19,7 @@ export default function Contact() {
           </h1>
           <p className="mt-6 max-w-prose text-[1.15rem] text-loam/75">
             The first step is a visit to your garden. Send me a note below and I&apos;ll reply {site.responseTime} to find a
-            time. Or call me on{" "}
-            <a href={site.phoneHref} className="link text-loam">
-              {site.phone}
-            </a>
-            .
+            time.
           </p>
         </div>
 

@@ -56,8 +56,8 @@ export default function Privacy() {
 
       <h2>Your choices</h2>
       <p>
-        You can ask to see the information I hold about you, have it corrected, or have it deleted. Email me at{" "}
-        <a href={`mailto:${site.email}`} className="link">{site.email}</a> and I&apos;ll respond within 30 days.
+        You can ask to see the information I hold about you, have it corrected, or have it deleted. Contact me through the{" "}
+        <Link href="/contact" className="link">contact page</Link> and I&apos;ll respond within 30 days.
       </p>
       <p>
         If you&apos;re not happy with how I&apos;ve handled your information, you can contact the{" "}

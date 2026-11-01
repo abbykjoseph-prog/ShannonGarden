@@ -1,5 +1,6 @@
 // Draft - have the client review before launch; not legal advice.
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { site } from "@/lib/site";
 
@@ -54,8 +55,8 @@ export default function Terms() {
 
       <h2>Changes</h2>
       <p>
-        I may update these terms from time to time. The date at the top shows when they last changed. Questions? Email{" "}
-        <a href={`mailto:${site.email}`} className="link">{site.email}</a>.
+        I may update these terms from time to time. The date at the top shows when they last changed. Questions? Get in
+        touch through the <Link href="/contact" className="link">contact page</Link>.
       </p>
     </LegalPage>
   );

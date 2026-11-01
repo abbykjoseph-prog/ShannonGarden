@@ -27,8 +27,6 @@ const jsonLd = {
   "@type": "LocalBusiness",
   name: site.name,
   founder: { "@type": "Person", name: site.person },
-  telephone: site.phone,
-  email: site.email,
   url: site.url,
   image: `${site.url}/opengraph-image.png`,
   address: { "@type": "PostalAddress", addressLocality: "Toronto", addressRegion: "ON", addressCountry: "CA" },

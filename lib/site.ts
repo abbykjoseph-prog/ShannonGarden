@@ -8,8 +8,9 @@ export const site = {
   person: "Shannon Boudreau",
   firstName: "Shannon",
   url: "https://shannon-garden.vercel.app", // TODO replace with the real domain
-  phone: "(416) 555-0142", // TODO confirm
-  phoneHref: "tel:+14165550142", // TODO confirm
+  // Phone and email appear in exactly two places: the footer and the contact page.
+  phone: "(647) 545-9112",
+  phoneHref: "tel:+16475459112",
   email: "hello@example.com", // TODO confirm
   // Paid garden work only. Keep it modest: "3+" or "3-4". Don't use bigger numbers anywhere.
   yearsProfessional: "3+", // TODO confirm "3+" or "3-4"

@@ -29,9 +29,6 @@ export default function Home() {
             <Link href="/contact" className="btn-primary">Book a garden visit</Link>
             <Link href="/work" className="btn-quiet">See recent work</Link>
           </div>
-          <p className="mt-6 text-[0.98rem] text-loam/65">
-            Or call me on <a href={site.phoneHref} className="link text-loam">{site.phone}</a>
-          </p>
         </div>
         <div className="md:col-span-7">
           <WateringCan />

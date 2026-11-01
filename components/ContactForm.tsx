@@ -96,8 +96,8 @@ export function ContactForm() {
       <div ref={statusRef} tabIndex={-1} role="status" className="animate-[settle_300ms_ease-out] motion-reduce:animate-none">
         <h2 className="text-3xl">Thanks, {status.name}. Your note is with me.</h2>
         <p className="mt-3 max-w-prose text-loam/80">
-          I&apos;ll reply {site.responseTime} to arrange a time to see the garden. If it&apos;s urgent, call me on{" "}
-          <a href={site.phoneHref} className="link">{site.phone}</a>.
+          I&apos;ll reply {site.responseTime} to arrange a time to see the garden. If it&apos;s urgent, my number is on
+          this page under &ldquo;Reach me directly&rdquo;.
         </p>
         <button type="button" onClick={() => setStatus({ kind: "idle" })} className="link mt-6 text-[0.98rem]">
           Send another message
@@ -171,8 +171,7 @@ export function ContactForm() {
                 ? "The contact form isn't switched on yet."
                 : "Something went wrong on my end."}{" "}
               Please email me directly at{" "}
-              <a href={mailto} className="link font-semibold">{site.email}</a> (this opens your email with what you wrote) or call{" "}
-              <a href={site.phoneHref} className="link font-semibold">{site.phone}</a>.
+              <a href={mailto} className="link font-semibold">{site.email}</a> (this opens your email with what you wrote).
             </p>
           </div>
         )}

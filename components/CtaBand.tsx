@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
 
 export function CtaBand({
   title = "Let's walk your garden together.",
@@ -17,7 +16,7 @@ export function CtaBand({
         </div>
         <div className="flex flex-col gap-3 sm:flex-row md:col-span-5 md:justify-end">
           <Link href="/contact" className="btn-primary">Book a garden visit</Link>
-          <a href={site.phoneHref} className="btn-quiet">Call {site.phone}</a>
+          <Link href="/contact" className="btn-quiet">Ask a question first</Link>
         </div>
       </div>
     </section>
