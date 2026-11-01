@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageIntro } from "@/components/PageIntro";
+import { DesignBed } from "@/components/DesignBed";
 import { ContactForm } from "@/components/ContactForm";
 import { PostalChecker } from "@/components/PostalChecker";
 import { contactSteps, gtaRegions, site } from "@/lib/site";
@@ -12,23 +12,31 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <PageIntro title={<>Book a <em className="text-green">garden visit.</em></>}>
-        <p>
-          The first step is a visit to your garden. Send me a note below and I&apos;ll reply {site.responseTime} to find a
-          time. Or call me on{" "}
-          <a href={site.phoneHref} className="link text-loam">
-            {site.phone}
-          </a>
-          .
-        </p>
-      </PageIntro>
+      <section className="wrap grid gap-x-16 gap-y-12 pb-20 pt-14 md:grid-cols-12 md:pt-20">
+        <div className="md:col-span-5 md:row-start-1">
+          <h1 className="text-[2.9rem] leading-[1] sm:text-6xl md:text-7xl">
+            Book a <em className="text-green">garden visit.</em>
+          </h1>
+          <p className="mt-6 max-w-prose text-[1.15rem] text-loam/75">
+            The first step is a visit to your garden. Send me a note below and I&apos;ll reply {site.responseTime} to find a
+            time. Or call me on{" "}
+            <a href={site.phoneHref} className="link text-loam">
+              {site.phone}
+            </a>
+            .
+          </p>
+        </div>
 
-      <section className="wrap grid gap-x-16 gap-y-14 pb-20 md:grid-cols-12">
-        <div className="rounded-2xl bg-paper p-5 ring-1 ring-loam/10 sm:p-9 md:col-span-7">
+        {/* On phones the form comes first; on desktop the bed sits beside the heading. */}
+        <div className="rounded-2xl bg-paper p-5 ring-1 ring-loam/10 sm:p-9 md:col-span-7 md:row-start-2">
           <ContactForm />
         </div>
 
-        <aside className="space-y-12 md:col-span-5">
+        <div className="md:col-span-7 md:col-start-6 md:row-start-1">
+          <DesignBed />
+        </div>
+
+        <aside className="space-y-12 md:col-span-5 md:col-start-8 md:row-start-2">
           <div>
             <h2 className="text-[1.9rem] leading-tight">Reach me directly</h2>
             <ul className="mt-3 space-y-1 text-[1.15rem]">
